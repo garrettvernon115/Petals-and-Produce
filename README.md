@@ -18,7 +18,8 @@ Team details follow
 
 ### 495 Students 
 
-495 student name here
+Darien Dalton
+Helen Mills
 
 ### 394 Students
 
