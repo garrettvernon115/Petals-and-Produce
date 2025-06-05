@@ -1,16 +1,16 @@
-# Your Team Name Here
+# Summer Team 4
 
-This is the team repository for <your team name here>
+This is the team repository for Summer Team 4, created for the Franklin University Computer Science Practicum course.
 
 ## Project
 
 Project details follow. 
 
 ### Project Name
-Your Project Name goes here
+Petals & Produce
 
 ### Project Description  
-Describe the problem solved and/or what the project is doing
+Petals & Produce is an e-commerce application for flowers and plants. It features an admin portal for managing products and provides a public-facing interface for users to browse listings, view product details, and place orders for local pickup. The goal is to offer a simple yet powerful tool for small vendors and customers in the local community.
 
 ## Team
 
@@ -18,23 +18,51 @@ Team details follow
 
 ### 495 Students 
 
-Darien Dalton and
-Helen Mills
+Darien Dalton, Helen Mills
 
 ### 394 Students
 
-394 Student(s) here
+Ethan Strader, Kat Falcone
 
 ### 294 Students
 
-294 Student(s) here
+Larissa Allen, Garret Vernon
 
 ## Prerequisites
 
-List tech stack (including version if possible) on both backend and frondend (Database).
+### Backend
+- Java 17
+- Spring Boot 3.2+
+- Maven
+- MySQL (Hosted on AWS RDS Free Tier)
+
+### Frontend
+- Angular 17+
+- Node.js 18+ (recommended)
+- npm 9+
+
+### Development Tools
+- VSCode (recommended)
+- Git & GitHub
 
 ## Set Up and Installation
 
-Details on how to set up the project follow.
+```bash
+git clone https://github.com/FranklinUniversityCompSciPracticum/SU25_Team4.git
+cd SU25_Team4
+```
 
-<put the details here>
+### 2. Set up the backend
+```bash 
+cd backend
+./mvnw spring-boot:run
+```
+### 3. Set up the frontend
+```bash
+cd ../frontend
+npm install
+ng serve
+```
+### 4. View the app
+Open your browser and go to: http://localhost:4200
+
