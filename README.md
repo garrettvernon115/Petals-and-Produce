@@ -17,11 +17,11 @@ Darien Dalton, Helen Mills
 
 ### 394 Students
 
-394 Student(s) here
+Ethan Strader, Kat Falcone
 
 ### 294 Students
 
-294 Student(s) here
+Larissa Allen, Garret Vernon
 
 ## Prerequisites
 
