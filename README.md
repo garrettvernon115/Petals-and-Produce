@@ -2,9 +2,7 @@
 
 This is the team repository for Summer Team 4, created for the Franklin University Computer Science Practicum course.
 
-## Project
-
-Project details follow. 
+## Project 
 
 ### Project Name
 Petals & Produce
@@ -14,7 +12,6 @@ Petals & Produce is an e-commerce application for flowers and plants. It feature
 
 ## Team
 
-Team details follow
 
 ### 495 Students 
 
