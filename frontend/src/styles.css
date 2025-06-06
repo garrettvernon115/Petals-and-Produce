@@ -1,0 +1,24 @@
+/* 🌿 Petals & Produce Color Palette - https://coolors.co/palette/ccd5ae-e9edc9-fefae0-faedcd-d4a373 */
+:root {
+    --sage:       #CCD5AE;
+    --mint:       #E9EDC9;
+    --butter:     #FEFAE0;
+    --apricot:    #FAEDCD;
+    --terra:      #D4A373;
+    --darkerterra: #b25e31;
+  
+    /* Role-based color usage */
+    --primary-color: var(--terra);          /* Branding & highlights */
+    --secondary-color: var(--sage);         /* Accent sections or highlights */
+    --background-color: var(--mint);        /* Page background */
+    --text-color: #3e2a2a;                  /* Main text */
+  
+    /* Buttons */
+    --button-bg: var(--terra);            /* Normal button background */
+    --button-hover-bg: var(--darkerterra);        /* Hover effect for buttons */
+    --button-text-color: white; /* Keeps contrast high */
+  
+    /* Borders or cards */
+    --border-color: var(--butter);          /* Light border/background accent */
+  }
+  

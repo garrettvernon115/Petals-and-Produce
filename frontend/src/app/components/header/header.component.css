@@ -1,0 +1,15 @@
+.app-header {
+    background-color: var(--background-color);  
+    color: var(--text-color);                  
+    font-family: 'Playfair Display', serif;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .app-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: var(--text-color);  
+  }
+  

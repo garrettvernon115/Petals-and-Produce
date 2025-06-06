@@ -12,7 +12,6 @@ Petals & Produce is an e-commerce application for flowers and plants. It feature
 
 ## Team
 
-
 ### 495 Students 
 
 Darien Dalton, Helen Mills
@@ -44,6 +43,8 @@ Larissa Allen, Garret Vernon
 
 ## Set Up and Installation
 
+
+### 1. Clone the repository
 ```bash
 git clone https://github.com/FranklinUniversityCompSciPracticum/SU25_Team4.git
 cd SU25_Team4
@@ -62,4 +63,8 @@ ng serve
 ```
 ### 4. View the app
 Open your browser and go to: http://localhost:4200
+
+### Notes
+
+
 
