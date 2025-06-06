@@ -1,13 +1,14 @@
 # Summer Team 4
 
-This is the team repository for **Summer Team 4**, created for the Franklin University Computer Science Practicum course.
+This is the team repository for Summer Team 4, created for the Franklin University Computer Science Practicum course.
 
-## Project
+## Project 
 
-### Petals & Produce
+### Project Name
+Petals & Produce
 
 ### Project Description  
-Petals & Produce is an e-commerce application for flowers and plants. It features an **admin portal** for managing products and provides a **public-facing interface** for users to browse listings, view product details, and place orders for local pickup. The goal is to offer a simple yet powerful tool for small vendors and customers in the local community.
+Petals & Produce is an e-commerce application for flowers and plants. It features an admin portal for managing products and provides a public-facing interface for users to browse listings, view product details, and place orders for local pickup. The goal is to offer a simple yet powerful tool for small vendors and customers in the local community.
 
 ## Team
 
@@ -42,6 +43,7 @@ Larissa Allen, Garret Vernon
 
 ## Set Up and Installation
 
+
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/FranklinUniversityCompSciPracticum/SU25_Team4.git
@@ -51,7 +53,7 @@ cd SU25_Team4
 ### 2. Set up the backend
 ```bash 
 cd backend
-mvnw spring-boot:run
+./mvnw spring-boot:run
 ```
 ### 3. Set up the frontend
 ```bash
@@ -63,5 +65,6 @@ ng serve
 Open your browser and go to: http://localhost:4200
 
 ### Notes
+
 
 
