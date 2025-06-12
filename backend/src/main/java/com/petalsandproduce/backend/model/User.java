@@ -1,3 +1,4 @@
+package com.petalsandproduce.backend.model;
 
 import java.util.Objects;
 
@@ -29,6 +30,48 @@ public class User {
         this.password = Objects.requireNonNull(password);
     }
 
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    // Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = Objects.requireNonNull(name);
+    }
+
+    public void setEmail(String email) {
+        this.email = Objects.requireNonNull(email);
+    }
+
+    public void setPassword(String password) {
+        this.password = Objects.requireNonNull(password);
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    
     public String toString() {
         String s = "Username: " + this.name + "; Email: " + this.email + "; Password: " + this.password;
         return s;

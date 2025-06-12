@@ -1,3 +1,6 @@
+package com.petalsandproduce.backend.request;
+
+import com.petalsandproduce.backend.model.Role;
 
 public class RegistrationRequest {
     private long id;
