@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.petalsandproduce.backend.model.Role;
+import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.request.RegistrationRequest;
 import com.petalsandproduce.backend.service.UserService;
 
@@ -39,5 +40,24 @@ public class UserController {
 
         userService.saveUser(rr);
         return ResponseEntity.ok("User registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody RegistrationRequest rr) {
+        User user = userService.findByEmail(rr.getEmail());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body("No user with that email was found");
+        }
+
+        if (user.getPassword().equals(rr.getPassword())) {
+            return ResponseEntity.ok("Login successful!"); 
+        }
+
+        // Better to have the fail state as default result
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED) 
+            .body("Username or Password was incorrect.");
+        
+        
     }
 }
