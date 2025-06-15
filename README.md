@@ -53,7 +53,7 @@ cd SU25_Team4
 ### 2. Set up the backend
 ```bash 
 cd backend
-./mvnw spring-boot:run
+mvnw spring-boot:run
 ```
 ### 3. Set up the frontend
 ```bash
