@@ -4,8 +4,9 @@ import com.petalsandproduce.backend.exception.ProductNotFoundException;
 import com.petalsandproduce.backend.model.Product;
 import com.petalsandproduce.backend.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import java.util.List; 
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -18,12 +19,11 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
     }
 
-    
-    /**
-     * Retrieves all products from the database.
-     * @return a list of all products.
-     */
-    public List<Product> findAllProducts() {
-        return productRepository.findAll();
+    public List<Product> getFilteredProducts(String category, String search, Double minPrice, Double maxPrice) {
+        Specification<Product> spec = Specification.where(ProductSpecification.hasCategory(category))
+                .and(ProductSpecification.hasKeyword(search))
+                .and(ProductSpecification.hasMinPrice(minPrice))
+                .and(ProductSpecification.hasMaxPrice(maxPrice));
+        return productRepository.findAll(spec);
     }
 }
