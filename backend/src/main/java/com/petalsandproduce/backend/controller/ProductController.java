@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List; 
 
 @RestController
 @RequestMapping("/api/products")
@@ -20,5 +21,15 @@ public class ProductController {
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         Product product = productService.findProductById(id);
         return ResponseEntity.ok(product);
+    }
+
+    
+    /**
+     * GET /api/products : Get all products.
+     * @return the list of all products.
+     */
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productService.findAllProducts();
     }
 }
