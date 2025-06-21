@@ -21,6 +21,3 @@
     /* Borders or cards */
     --border-color: var(--butter);          /* Light border/background accent */
   }
-  
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

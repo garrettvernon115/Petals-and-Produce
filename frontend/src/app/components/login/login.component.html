@@ -1,0 +1,20 @@
+<main class="app-demo">
+  <mat-card class="login-card">
+    <h2>Login</h2>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="form-control">
+        <label for="username">Username:</label>
+        <input id="username" [(ngModel)]="username" name="username" required />
+      </div>
+
+      <div class="form-control">
+        <label for="password">Password:</label>
+        <input id="password" type="password" [(ngModel)]="password" name="password" required />
+      </div>
+
+    <button mat-raised-button class="primary" type="submit" [disabled]="!loginForm.valid">
+    Login
+    </button>
+    </form>
+  </mat-card>
+</main>
