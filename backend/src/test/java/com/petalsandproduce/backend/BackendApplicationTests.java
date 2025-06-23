@@ -49,46 +49,46 @@ class BackendApplicationTests {
 		validRegistration.put("email", "johnc@gmail.com");
 		validRegistration.put("password", "Password123");
 		// Normal
-		HashMap<String,String> validLogin = new HashMap<>();
+		validLogin = new HashMap<>();
 		validLogin.put("name", "John Computer");
 		validLogin.put("email", "johnc@gmail.com");
 		validLogin.put("password", "Password123");
 		// User doesn't exist
-		HashMap<String,String> invalidLogin = new HashMap<>();
+		invalidLogin = new HashMap<>();
 		invalidLogin.put("name", "AAAAAAAA");
 		invalidLogin.put("password", "AAAAAAAA");
 
-		HashMap<String,String> emptyPassword = new HashMap<>();
+		emptyPassword = new HashMap<>();
 		emptyPassword.put("name", "John Missing");
 		emptyPassword.put("email", "missing@gmail.com");
 		emptyPassword.put("password", " ");
 
-		HashMap<String,String> emptyUsername = new HashMap<>();
+		emptyUsername = new HashMap<>();
 		emptyUsername.put("name", " ");
 		emptyUsername.put("email", "missing@gmail.com");
 		emptyUsername.put("password", "Password123");
 
-		HashMap<String,String> emptyEmail = new HashMap<>();
+		emptyEmail = new HashMap<>();
 		emptyEmail.put("name", "John Missing");
 		emptyEmail.put("email", " ");
 		emptyEmail.put("password", "Password123");
 
-		HashMap<String,String> missingPassword = new HashMap<>();
+		missingPassword = new HashMap<>();
 		missingPassword.put("name", "John Computer");
 		missingPassword.put("email", "johnc@gmail.com");
 		missingPassword.put("password", "");
 
-		HashMap<String,String> missingEmail = new HashMap<>();
+		missingEmail = new HashMap<>();
 		missingEmail.put("name", "John Computer");
 		missingEmail.put("email", "");
 		missingEmail.put("password", "Password123");
 
-		HashMap<String,String> incorrectPassword = new HashMap<>();
+		incorrectPassword = new HashMap<>();
 		incorrectPassword.put("name", "John Computer");
 		incorrectPassword.put("email", "johnc@gmail.com");
 		incorrectPassword.put("password", "wrong");
 
-		HashMap<String,String> incorrectEmail = new HashMap<>();
+		incorrectEmail = new HashMap<>();
 		incorrectEmail.put("name", "John Computer");
 		incorrectEmail.put("email", "wrongemail@evil.com");
 		incorrectEmail.put("password", "Password123");
@@ -163,7 +163,6 @@ class BackendApplicationTests {
 		mvc.perform(post("/api/login")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(objectMapper.writeValueAsString(validLogin)))
-		// WHAT DO YOU MEAN 400?????????? NOT EVEN A 401? JUST 400. COOL.
 		.andExpect(status().isOk());
 	}
 
@@ -175,9 +174,6 @@ class BackendApplicationTests {
 		.andExpect(status().isBadRequest());
 	}
 
-	// I don't know why these all throw 400s instead of 401s
-	// Postman works with all this code just fine so I have to assume it's
-	// something wrong with the tests themselves
 	@Test
 	public void testIncorrectPassword() throws Exception {
 		mvc.perform(post("/api/login")
@@ -209,8 +205,4 @@ class BackendApplicationTests {
 		.content(objectMapper.writeValueAsString(missingEmail)))
 		.andExpect(status().isUnauthorized());
 	}
-
-	
-
-
 }
