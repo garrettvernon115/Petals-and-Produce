@@ -42,8 +42,6 @@ class BackendApplicationTests {
 
 	@BeforeEach 
 	void setup() {
-		
-		// Not used currently but will be later
 		validRegistration = new HashMap<>();
 		validRegistration.put("name", "John Computer");
 		validRegistration.put("email", "johnc@gmail.com");
@@ -57,21 +55,23 @@ class BackendApplicationTests {
 		invalidLogin = new HashMap<>();
 		invalidLogin.put("name", "AAAAAAAA");
 		invalidLogin.put("password", "AAAAAAAA");
-
+		// Basically self-documenting
 		emptyPassword = new HashMap<>();
-		emptyPassword.put("name", "John Missing");
-		emptyPassword.put("email", "missing@gmail.com");
+		emptyPassword.put("name", "Empty Password");
+		emptyPassword.put("email", "emptypassword@gmail.com");
 		emptyPassword.put("password", " ");
 
 		emptyUsername = new HashMap<>();
 		emptyUsername.put("name", " ");
-		emptyUsername.put("email", "missing@gmail.com");
+		emptyUsername.put("email", "emptyname@gmail.com");
 		emptyUsername.put("password", "Password123");
 
 		emptyEmail = new HashMap<>();
-		emptyEmail.put("name", "John Missing");
+		emptyEmail.put("name", "Empty Email");
 		emptyEmail.put("email", " ");
 		emptyEmail.put("password", "Password123");
+
+		// Login stuff starts here so we need actual values for this
 
 		missingPassword = new HashMap<>();
 		missingPassword.put("name", "John Computer");
@@ -93,10 +93,6 @@ class BackendApplicationTests {
 		incorrectEmail.put("email", "wrongemail@evil.com");
 		incorrectEmail.put("password", "Password123");
 	}
-	
-	
-
-	
 
 	@Test
 	void contextLoads() {
@@ -127,7 +123,7 @@ class BackendApplicationTests {
 		mvc.perform(post("/api/register")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(objectMapper.writeValueAsString(emptyPassword)))
-		.andExpect(status().isBadRequest());
+		.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -139,7 +135,7 @@ class BackendApplicationTests {
 		mvc.perform(post("/api/register")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(objectMapper.writeValueAsString(emptyUsername)))
-		.andExpect(status().isBadRequest());
+		.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -151,10 +147,8 @@ class BackendApplicationTests {
 		mvc.perform(post("/api/register")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(objectMapper.writeValueAsString(emptyEmail)))
-		.andExpect(status().isBadRequest());
+		.andExpect(status().isUnauthorized());
 	}
-
-
 
 	// Login section
 
@@ -171,7 +165,7 @@ class BackendApplicationTests {
 		mvc.perform(post("/api/login")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(objectMapper.writeValueAsString(invalidLogin)))
-		.andExpect(status().isBadRequest());
+		.andExpect(status().isUnauthorized());
 	}
 
 	@Test

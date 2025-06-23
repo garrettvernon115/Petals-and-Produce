@@ -34,6 +34,25 @@ public class UserController {
                 .body("Email already registered");
         }
 
+        if (rr.getEmail() == null || rr.getEmail().trim() == "") {
+            // There's probably a better category than 401 but idk what it is
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("You must input an email address");
+        }
+
+        if (rr.getName() == null || rr.getName().trim() == "") {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("You must input a username");
+        }
+
+        if (rr.getPassword() == null || rr.getPassword().trim() == "") {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("You must input a password");
+        }
+
         // Auto-assign ADMIN if email ends with our domain
         if (rr.getEmail().endsWith("@petalsandproduce.com")) {
             rr.setRole(Role.ADMIN);
