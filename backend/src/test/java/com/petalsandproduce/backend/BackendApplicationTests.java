@@ -1,13 +1,216 @@
 package com.petalsandproduce.backend;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc
+
+
+
 class BackendApplicationTests {
+	private Map<String,String> validRegistration;
+	private Map<String,String> validLogin;
+	private Map<String,String> invalidLogin;
+	private Map<String,String> emptyPassword;
+	private Map<String,String> emptyUsername;
+	private Map<String,String> emptyEmail;
+	private Map<String,String> missingPassword;
+	private Map<String,String> missingEmail;
+	private Map<String,String> incorrectPassword;
+	private Map<String,String> incorrectEmail;
+
+	@Autowired
+	private MockMvc mvc;
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	@BeforeEach 
+	void setup() {
+		
+		// Not used currently but will be later
+		validRegistration = new HashMap<>();
+		validRegistration.put("name", "John Computer");
+		validRegistration.put("email", "johnc@gmail.com");
+		validRegistration.put("password", "Password123");
+		// Normal
+		HashMap<String,String> validLogin = new HashMap<>();
+		validLogin.put("name", "John Computer");
+		validLogin.put("email", "johnc@gmail.com");
+		validLogin.put("password", "Password123");
+		// User doesn't exist
+		HashMap<String,String> invalidLogin = new HashMap<>();
+		invalidLogin.put("name", "AAAAAAAA");
+		invalidLogin.put("password", "AAAAAAAA");
+
+		HashMap<String,String> emptyPassword = new HashMap<>();
+		emptyPassword.put("name", "John Missing");
+		emptyPassword.put("email", "missing@gmail.com");
+		emptyPassword.put("password", " ");
+
+		HashMap<String,String> emptyUsername = new HashMap<>();
+		emptyUsername.put("name", " ");
+		emptyUsername.put("email", "missing@gmail.com");
+		emptyUsername.put("password", "Password123");
+
+		HashMap<String,String> emptyEmail = new HashMap<>();
+		emptyEmail.put("name", "John Missing");
+		emptyEmail.put("email", " ");
+		emptyEmail.put("password", "Password123");
+
+		HashMap<String,String> missingPassword = new HashMap<>();
+		missingPassword.put("name", "John Computer");
+		missingPassword.put("email", "johnc@gmail.com");
+		missingPassword.put("password", "");
+
+		HashMap<String,String> missingEmail = new HashMap<>();
+		missingEmail.put("name", "John Computer");
+		missingEmail.put("email", "");
+		missingEmail.put("password", "Password123");
+
+		HashMap<String,String> incorrectPassword = new HashMap<>();
+		incorrectPassword.put("name", "John Computer");
+		incorrectPassword.put("email", "johnc@gmail.com");
+		incorrectPassword.put("password", "wrong");
+
+		HashMap<String,String> incorrectEmail = new HashMap<>();
+		incorrectEmail.put("name", "John Computer");
+		incorrectEmail.put("email", "wrongemail@evil.com");
+		incorrectEmail.put("password", "Password123");
+	}
+	
+	
+
+	
 
 	@Test
 	void contextLoads() {
 	}
+
+	// Registration section 
+
+	@Test
+	public void testSuccessfulRegistration() throws Exception {
+		// It doesn't matter if this throws an exception. 
+		// We just need a clean slate because otherwise it starts being really annoying
+		mvc.perform(delete("/api/deleteAccount")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(validRegistration)));
+
+		mvc.perform(post("/api/register")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(validRegistration)))
+		.andExpect(status().isOk());
+	}
+
+	@Test
+	public void testEmptyPassword() throws Exception {
+		mvc.perform(delete("/api/deleteAccount")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(emptyPassword)));
+
+		mvc.perform(post("/api/register")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(emptyPassword)))
+		.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void testEmptyUsername() throws Exception {
+		mvc.perform(delete("/api/deleteAccount")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(emptyUsername)));
+
+		mvc.perform(post("/api/register")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(emptyUsername)))
+		.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void testEmptyEmail() throws Exception {
+		mvc.perform(delete("/api/deleteAccount")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(emptyEmail)));
+
+		mvc.perform(post("/api/register")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(emptyEmail)))
+		.andExpect(status().isBadRequest());
+	}
+
+
+
+	// Login section
+
+	@Test
+	public void testSuccessfulLogin() throws Exception {
+		mvc.perform(post("/api/login")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(validLogin)))
+		// WHAT DO YOU MEAN 400?????????? NOT EVEN A 401? JUST 400. COOL.
+		.andExpect(status().isOk());
+	}
+
+	@Test
+	public void testUnsuccessfulRegistration() throws Exception {
+		mvc.perform(post("/api/login")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(invalidLogin)))
+		.andExpect(status().isBadRequest());
+	}
+
+	// I don't know why these all throw 400s instead of 401s
+	// Postman works with all this code just fine so I have to assume it's
+	// something wrong with the tests themselves
+	@Test
+	public void testIncorrectPassword() throws Exception {
+		mvc.perform(post("/api/login")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(incorrectPassword)))
+		.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	public void testIncorrectEmail() throws Exception {
+		mvc.perform(post("/api/login")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(incorrectEmail)))
+		.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	public void testMissingPassword() throws Exception {
+		mvc.perform(post("/api/login")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(missingPassword)))
+		.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	public void testMissingEmail() throws Exception {
+		mvc.perform(post("/api/login")
+		.contentType(MediaType.APPLICATION_JSON)
+		.content(objectMapper.writeValueAsString(missingEmail)))
+		.andExpect(status().isUnauthorized());
+	}
+
+	
+
 
 }

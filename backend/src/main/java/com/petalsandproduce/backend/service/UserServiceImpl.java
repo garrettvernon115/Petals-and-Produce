@@ -36,5 +36,10 @@ public class UserServiceImpl implements UserService {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteByEmail(String email) {
+        userRepository.deleteByEmail(email);
+    }
+
 
 }
