@@ -1,33 +1,30 @@
 package com.petalsandproduce.backend.model;
 
+import jakarta.persistence.*;
 import java.util.Objects;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String email;
     private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     protected User() {}
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, Role role) {
         this.name = Objects.requireNonNull(name);
         this.email = Objects.requireNonNull(email);
-        // Probably want encryption logic
         this.password = Objects.requireNonNull(password);
+        this.role = role != null ? role : Role.USER;
     }
 
     // Getters
@@ -71,10 +68,9 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
-    
-    public String toString() {
-        String s = "Username: " + this.name + "; Email: " + this.email + "; Password: " + this.password;
-        return s;
-    }
 
+    @Override
+    public String toString() {
+        return "Username: " + this.name + "; Email: " + this.email + "; Password: " + this.password;
+    }
 }
