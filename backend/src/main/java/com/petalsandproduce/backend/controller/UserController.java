@@ -1,6 +1,7 @@
 package com.petalsandproduce.backend.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,8 @@ import com.petalsandproduce.backend.model.Role;
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.request.RegistrationRequest;
 import com.petalsandproduce.backend.service.UserService;
+
+import jakarta.transaction.Transactional;
 
 
 @RestController
@@ -29,6 +32,25 @@ public class UserController {
             return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body("Email already registered");
+        }
+
+        if (rr.getEmail() == null || rr.getEmail().trim() == "") {
+            // There's probably a better category than 401 but idk what it is
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("You must input an email address");
+        }
+
+        if (rr.getName() == null || rr.getName().trim() == "") {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("You must input a username");
+        }
+
+        if (rr.getPassword() == null || rr.getPassword().trim() == "") {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("You must input a password");
         }
 
         // Auto-assign ADMIN if email ends with our domain
@@ -57,7 +79,26 @@ public class UserController {
         // Better to have the fail state as default result
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED) 
             .body("Username or Password was incorrect.");
-        
-        
     }
+
+    // I had to add this to get some test cases to stop imploding
+    @DeleteMapping("/deleteAccount")
+    @Transactional
+    public ResponseEntity<?> deleteUser(@RequestBody RegistrationRequest rr) {
+        // Get the user from the rr request
+        User user = userService.findByEmail(rr.getEmail());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body("It's already deleted or something idk how you got here");
+        }
+        // Check that the password matches before doing anything
+        if (user.getPassword().equals(rr.getPassword())) {
+            userService.deleteByEmail(rr.getEmail());
+            return ResponseEntity.ok("Deletion successful!"); 
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED) 
+            .body("Password did not match.");
+    }
+
 }
