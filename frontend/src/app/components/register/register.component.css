@@ -9,29 +9,29 @@
   text-align: center;
 }
 
-
 .full-width {
   width: 100%;
 }
 
-  button {
-    border: none;
-    padding: 10px 20px;
-    margin-top: 1.5rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: inherit;
-  }
-  
-  button.primary {
-    background-color: var(--button-bg);
-  }
-  
-  button.primary:hover {
-    background-color: var(--button-hover-bg); 
-  }
+button {
+  border: none;
+  padding: 10px 20px;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: inherit;
+}
+
+button.primary {
+  background-color: var(--button-bg);
+}
+
+button.primary:hover {
+  background-color: var(--button-hover-bg); 
+}
+
 .form-control {
   display: flex;
   flex-direction: column;
