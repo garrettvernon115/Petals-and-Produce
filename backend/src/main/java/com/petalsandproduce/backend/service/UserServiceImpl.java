@@ -18,8 +18,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(RegistrationRequest rr) {
-        User user = new User(rr.getName(), rr.getEmail(), rr.getPassword());
-        user.setRole(rr.getRole());
+        User user = new User(rr.getName(), rr.getUsername(), rr.getEmail(), rr.getPassword(), rr.getRole());
         userRepository.save(user);
     }
 
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService {
     public List<RegistrationRequest> findAllUsers() {
         return userRepository.findAll().stream()
             .map(u -> new RegistrationRequest(
-                u.getName(), u.getEmail(), u.getPassword(), u.getRole()))
+                u.getName(), u.getUsername(), u.getEmail(), u.getPassword(), u.getRole()))
             .collect(Collectors.toList());
     }
 
