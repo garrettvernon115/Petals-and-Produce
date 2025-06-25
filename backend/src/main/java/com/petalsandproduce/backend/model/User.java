@@ -12,16 +12,23 @@ public class User {
     private Long id;
 
     private String name;
-    private String email;
-    private String password;
 
+    @Column(unique = true)
+    private String username;
+
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+    
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     protected User() {}
 
-    public User(String name, String email, String password, Role role) {
+    public User(String name, String Username, String email, String password, Role role) {
         this.name = Objects.requireNonNull(name);
+        this.username = Objects.requireNonNull(username);
         this.email = Objects.requireNonNull(email);
         this.password = Objects.requireNonNull(password);
         this.role = role != null ? role : Role.USER;
@@ -34,6 +41,10 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {
@@ -55,6 +66,10 @@ public class User {
 
     public void setName(String name) {
         this.name = Objects.requireNonNull(name);
+    }
+
+    public void setUsername(String username) {
+        this.username = Objects.requireNonNull(username);
     }
 
     public void setEmail(String email) {
