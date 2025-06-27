@@ -37,21 +37,30 @@ export class RegisterComponent {
 
     };
 
-    this.http.post('/api/register', body).subscribe({
-      next: () => {
-        this.snackBar.open('Registration successful!', 'Close', {
-          duration: 3000,
-          verticalPosition: 'top',
-          horizontalPosition: 'center'
-        });
-      },
-      error: (err) => {
-        this.snackBar.open(err.error || 'Registration failed.', 'Close', {
-          duration: 3000,
-          verticalPosition: 'top',
-          horizontalPosition: 'center'
-        });
-      }
+this.http.post('/api/register', body, { responseType: 'text' }).subscribe({
+  next: (response) => {
+    this.snackBar.open('Successfully registered. Redirecting to login...', 'Close', {
+      duration: 3000,
+      verticalPosition: 'top',
+      horizontalPosition: 'center'
+    });
+
+    setTimeout(() => {
+      window.location.href = '/login';
+    }, 3000);
+  },
+  error: (err) => {
+    const message =
+      typeof err.error === 'string'
+        ? err.error
+        : err.error?.message || 'Registration failed.';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      verticalPosition: 'top',
+      horizontalPosition: 'center',
     });
   }
+});
+}
 }
