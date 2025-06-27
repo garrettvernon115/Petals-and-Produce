@@ -1,24 +1,27 @@
 package com.petalsandproduce.backend.service;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.repository.UserRepository;
 import com.petalsandproduce.backend.request.RegistrationRequest;
-import com.petalsandproduce.backend.model.User;
-
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; 
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void saveUser(RegistrationRequest rr) {
-        User user = new User(rr.getName(), rr.getUsername(), rr.getEmail(), rr.getPassword(), rr.getRole());
+        String hashedPassword = passwordEncoder.encode(rr.getPassword());
+        User user = new User(rr.getName(), rr.getUsername(), rr.getEmail(), hashedPassword, rr.getRole());
         userRepository.save(user);
     }
 
@@ -39,6 +42,4 @@ public class UserServiceImpl implements UserService {
     public void deleteByEmail(String email) {
         userRepository.deleteByEmail(email);
     }
-
-
 }
