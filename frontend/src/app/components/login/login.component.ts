@@ -39,16 +39,17 @@ export class LoginComponent {
       password: this.password
     };
 
-    this.http.post('/api/auth/login', loginData, { responseType: 'text' })
-      .subscribe({
-        next: (token) => {
-          localStorage.setItem('authToken', token);
-          this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
-          this.router.navigate(['/home']); //update later to admin for admins and products for others
-        },
-        error: (err) => {
-          this.snackBar.open('Login failed. Please try again.', 'Close', { duration: 3000 });
-        }
-      });
-  }
+    this.http.post<any>('/api/auth/login', loginData, { withCredentials: true }).subscribe({
+      next: (res) => {
+        localStorage.setItem('authToken', res.token);
+        localStorage.setItem('role', res.role);
+        localStorage.setItem('loggedIn', 'true');
+        this.snackBar.open('Login successful!', 'Close');
+        this.router.navigate(['/dashboard']);
+      },
+    error: () => {
+      this.snackBar.open('Login failed.', 'Close');
+    }
+  });
+}
 }
