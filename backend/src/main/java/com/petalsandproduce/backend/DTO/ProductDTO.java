@@ -1,9 +1,21 @@
 package com.petalsandproduce.backend.DTO;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+
+
 public class ProductDTO {
     private Long id;
+
+    @NotBlank(message = "Name is required")
     private String name;
+
+    @NotBlank(message = "Category is required")
     private String category;
+
+    @NotNull(message = "Price is required")
+    @PositiveOrZero(message = "Price must be 0 or more")
     private Double price;
 
     public ProductDTO() {}

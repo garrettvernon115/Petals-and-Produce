@@ -6,6 +6,9 @@ import com.petalsandproduce.backend.model.Product;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ProductMapper {
 
     public static ProductDTO toDTO(Product product) {
@@ -21,5 +24,13 @@ public class ProductMapper {
         return products.stream()
                 .map(ProductMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Product toEntity(ProductDTO dto) {
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setCategory(dto.getCategory());
+        product.setPrice(dto.getPrice());
+        return product;
     }
 }
