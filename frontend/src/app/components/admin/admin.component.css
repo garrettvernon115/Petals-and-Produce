@@ -5,25 +5,28 @@
 }
 
 .info-card {
-  background-color: #e9f1d3;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  text-align: center;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 2rem auto;
+    text-align: center;
 }
 
 .custom-button {
-  background-color: #d3834d;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 20px;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: inherit;
+    background-color: var(--button-bg);
 }
 
 .custom-button:hover {
-  background-color: #b96d3b;
+    background-color: var(--button-hover-bg); 
 }

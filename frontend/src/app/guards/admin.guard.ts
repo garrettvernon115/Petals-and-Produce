@@ -9,7 +9,7 @@ export class AdminGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    if (this.auth.isLoggedIn() && this.auth.getUserRole() === 'admin') {
+    if (this.auth.isLoggedIn() && this.auth.getUserRole() === 'ADMIN') {
       return true;
     }
     this.router.navigate(['/access-denied']);
