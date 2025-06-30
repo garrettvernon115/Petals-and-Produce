@@ -33,20 +33,28 @@ export class LoginComponent {
   constructor(private snackBar: MatSnackBar,     private http: HttpClient,     private router: Router) {}
 
 
-  onSubmit() {
-    const loginData = {
-      username: this.username,
-      password: this.password
-    };
+onSubmit() {
+  const loginData = {
+    username: this.username,
+    password: this.password
+  };
 
-    this.http.post<any>('/api/auth/login', loginData, { withCredentials: true }).subscribe({
-      next: (res) => {
-        localStorage.setItem('authToken', res.token);
-        localStorage.setItem('role', res.role);
-        localStorage.setItem('loggedIn', 'true');
-        this.snackBar.open('Login successful!', 'Close');
-        this.router.navigate(['/dashboard']);
-      },
+  this.http.post<any>('/api/auth/login', loginData, { withCredentials: true }).subscribe({
+    next: (res) => {
+      localStorage.setItem('authToken', res.token);
+      localStorage.setItem('role', res.role);
+      localStorage.setItem('loggedIn', 'true');
+
+      this.snackBar.open('Login successful!', 'Close');
+
+      // Route based on role
+      const role = res.role?.toUpperCase();
+      if (role === 'ADMIN') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/orders']);
+      }
+    },
     error: () => {
       this.snackBar.open('Login failed.', 'Close');
     }

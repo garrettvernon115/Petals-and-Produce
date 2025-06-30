@@ -14,7 +14,12 @@ export class AuthService {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
         localStorage.setItem('loggedIn', 'true');
-        this.router.navigate(['/dashboard']);
+
+        if (res.role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/orders']);
+        }
       },
       error: () => {
         alert('Login failed');
