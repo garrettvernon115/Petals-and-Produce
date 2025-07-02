@@ -5,7 +5,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
-
+import { ProductListComponent } from './components/product-list/product-list.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
@@ -17,5 +17,6 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
   { path: 'orders', component: OrderHistoryComponent, canActivate: [AuthGuard] },
-  { path: 'access-denied', component: AccessDeniedComponent }
+  { path: 'access-denied', component: AccessDeniedComponent },
+  { path: 'products', component: ProductListComponent },
 ];
