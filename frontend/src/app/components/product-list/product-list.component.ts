@@ -1,92 +1,112 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ProductService, ProductDTO } from '../../services/product.service';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
-  standalone: true,
-  imports: [CommonModule, RouterModule],
   selector: 'app-product-list',
+  standalone: true,
+  imports: [
+      CommonModule,
+  RouterModule,
+  HttpClientModule,
+  FormsModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatIconModule,
+  MatSelectModule,
+  MatButtonModule
+  ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
+export class ProductListComponent implements OnInit {
+  allProducts: ProductDTO[] = [];
+  products: ProductDTO[] = [];
+  categories: string[] = [];
 
-export class ProductListComponent { //sample product data to show pagination
-  allProducts = [
-  {
-    id: 1,
-    name: 'Roses',
-    price: 12.99,
-    imageUrl: 'https://cdn.pixabay.com/photo/2018/01/09/22/51/roses-3072698_1280.jpg'
-  },
-  {
-    id: 2,
-    name: 'Tulips',
-    price: 9.49,
-    imageUrl: 'https://cdn.pixabay.com/photo/2018/02/15/18/28/flower-3155965_1280.jpg'
-  },
-  {
-    id: 3,
-    name: 'Sunflowers',
-    price: 7.99,
-    imageUrl: 'https://cdn.pixabay.com/photo/2018/07/17/21/49/flower-bouquet-3545096_1280.jpg'
-  },
-  {
-    id: 4,
-    name: 'Lilies',
-    price: 10.50,
-    imageUrl: 'https://cdn.pixabay.com/photo/2021/03/13/12/27/flowers-6091612_1280.jpg'
-  },
-  {
-    id: 5,
-    name: 'Peonies',
-    price: 13.75,
-    imageUrl: 'https://images.pexels.com/photos/931167/pexels-photo-931167.jpeg'
-  },
-  {
-    id: 6,
-    name: 'Orchids',
-    price: 15.99,
-    imageUrl: 'https://images.pexels.com/photos/6431888/pexels-photo-6431888.jpeg'
-  },
-  {
-    id: 7,
-    name: 'Hydrangeas',
-    price: 11.25,
-    imageUrl: 'https://images.pexels.com/photos/931179/pexels-photo-931179.jpeg'
-  },
-  {
-    id: 8,
-    name: 'Daisies',
-    price: 6.99,
-    imageUrl: 'https://cdn.pixabay.com/photo/2015/06/05/23/28/bouquet-798950_1280.jpg'
-  }
-  ];
-
-  products: any[] = [];
   currentPage = 1;
   pageSize = 6;
 
+  searchQuery = '';
+  selectedCategory = '';
+  sortOption = '';
+  showCategoryDropdown = false;
+
+  constructor(private productService: ProductService) {}
+
   ngOnInit() {
-    this.updateProducts();
+    this.productService.getAllProducts().subscribe(data => {
+      this.allProducts = data;
+      this.categories = [...new Set(data.map(p => p.category))];
+      this.applyFilters();
+    });
   }
 
-  updateProducts() {
+  applyFilters() {
+    let filtered = this.allProducts.filter(product =>
+      product.name.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
+      (!this.selectedCategory || product.category === this.selectedCategory)
+    );
+
+    switch (this.sortOption) {
+      case 'name-asc':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'price-asc':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+    }
+
+    this.currentPage = 1;
+    this.updateProducts(filtered);
+  }
+
+  updateProducts(filtered: ProductDTO[]) {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
-    this.products = this.allProducts.slice(start, end);
+    this.products = filtered.slice(start, end);
   }
 
   nextPage() {
-    if ((this.currentPage * this.pageSize) < this.allProducts.length) {
+    const maxPage = Math.ceil(this.filteredProductCount() / this.pageSize);
+    if (this.currentPage < maxPage) {
       this.currentPage++;
-      this.updateProducts();
+      this.applyFilters();
     }
   }
 
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.updateProducts();
+      this.applyFilters();
     }
+  }
+
+  filteredProductCount(): number {
+    return this.allProducts.filter(product =>
+      product.name.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
+      (!this.selectedCategory || product.category === this.selectedCategory)
+    ).length;
+  }
+
+  toggleCategoryFilter() {
+    this.showCategoryDropdown = !this.showCategoryDropdown;
+  }
+
+  setSort(option: string) {
+    this.sortOption = option;
+    this.applyFilters();
   }
 }

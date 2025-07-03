@@ -1,13 +1,56 @@
-<div class="product-grid">
-    <a *ngFor="let product of products" [routerLink]="['/products', product.id]" class="product-card">
+<div class="filter-toolbar-wrapper">
+  <div class="icon-filter-bar">
+
+<div class="filter-box" title="Search">
+  <label for="searchInput" class="filter-label">Search</label>
+  <input
+    id="searchInput"
+    type="text"
+    [(ngModel)]="searchQuery"
+    (input)="applyFilters()"
+    placeholder="Search"
+    class="plain-search-input"
+  />
+</div>
+
+    <!-- Category Dropdown -->
+    <div class="filter-box category-filter" title="Filter by Category">
+      <label for="categorySelect" class="filter-label">Category</label>
+      <select id="categorySelect" [(ngModel)]="selectedCategory" (change)="applyFilters()">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <!-- Sort Buttons -->
+    <button mat-icon-button class="filter-icon-button" (click)="setSort('name-asc')" title="Sort A–Z">
+      <mat-icon>sort_by_alpha</mat-icon>
+    </button>
+    <button mat-icon-button class="filter-icon-button" (click)="setSort('price-asc')" title="Sort Price ↑">
+      <mat-icon>trending_up</mat-icon>
+    </button>
+    <button mat-icon-button class="filter-icon-button" (click)="setSort('price-desc')" title="Sort Price ↓">
+      <mat-icon>trending_down</mat-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Product Grid -->
+<div class="product-grid" *ngIf="products.length; else noResults">
+  <a *ngFor="let product of products" [routerLink]="['/products', product.id]" class="product-card">
     <img [src]="product.imageUrl" alt="{{ product.name }}">
     <h3>{{ product.name }}</h3>
     <p>{{ product.price | currency }}</p>
   </a>
 </div>
 
+<ng-template #noResults>
+  <p class="no-results">No products found.</p>
+</ng-template>
+
+<!-- Pagination -->
 <div class="pagination-controls">
-  <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+  <button mat-button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
   <span>Page {{ currentPage }}</span>
-  <button (click)="nextPage()" [disabled]="currentPage * pageSize >= allProducts.length">Next</button>
+  <button mat-button (click)="nextPage()" [disabled]="currentPage * pageSize >= allProducts.length">Next</button>
 </div>
