@@ -3,7 +3,7 @@
 
   <div class="button-group">
     <button routerLink="/home" mat-button>Home</button>
-    <button routerLink="/shop" mat-button>Shop Now</button>
+    <button routerLink="/products" mat-button>Shop Now</button>
         <button *ngIf="isLoggedIn()" routerLink="/orders" mat-button>Orders</button>
     <button *ngIf="isAdmin()" routerLink="/admin" mat-button>Admin</button>
     <button *ngIf="!isLoggedIn()" routerLink="/login" mat-button>Login</button>

@@ -6,7 +6,7 @@ import { AdminComponent } from './components/admin/admin.component';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
-
+import { ProductDetailComponent } from './components/product-detail.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 
@@ -19,4 +19,5 @@ export const routes: Routes = [
   { path: 'orders', component: OrderHistoryComponent, canActivate: [AuthGuard] },
   { path: 'access-denied', component: AccessDeniedComponent },
   { path: 'products', component: ProductListComponent },
+  { path: 'products/:id', component: ProductDetailComponent },
 ];

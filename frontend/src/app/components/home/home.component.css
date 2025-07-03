@@ -28,11 +28,11 @@
     font-family: inherit;
   }
   
-  button.primary {
+  button {
     background-color: var(--button-bg);
   }
   
-  button.primary:hover {
+  button:hover {
     background-color: var(--button-hover-bg); 
   }
   
