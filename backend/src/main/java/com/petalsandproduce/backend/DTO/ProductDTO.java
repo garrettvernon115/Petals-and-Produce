@@ -1,18 +1,33 @@
 package com.petalsandproduce.backend.DTO;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+
+
 public class ProductDTO {
     private Long id;
+
+    @NotBlank(message = "Name is required")
     private String name;
+
+    @NotBlank(message = "Category is required")
     private String category;
+
+    @NotNull(message = "Price is required")
+    @PositiveOrZero(message = "Price must be 0 or more")
     private Double price;
+    
+    private String imageUrl;
 
     public ProductDTO() {}
 
-    public ProductDTO(Long id, String name, String category, Double price) {
+    public ProductDTO(Long id, String name, String category, Double price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.price = price;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -31,6 +46,10 @@ public class ProductDTO {
         return price;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     // Setters
     public void setId(Long id) {
         this.id = id;
@@ -46,6 +65,10 @@ public class ProductDTO {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
 

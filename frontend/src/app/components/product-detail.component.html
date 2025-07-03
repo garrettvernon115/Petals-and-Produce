@@ -1,0 +1,31 @@
+<div *ngIf="error" class="error">
+  <h2>{{ error }}</h2>
+  <button mat-button (click)="goBack()">Back to Products</button>
+</div>
+
+<mat-card *ngIf="product && !error" class="product-card">
+  <div class="card-content">
+    <div class="image-container">
+      <img [src]="product.imageUrl" [alt]="product.name" />
+    </div>
+
+    <div class="details-container">
+      <h2>{{ product.name }}</h2>
+      <p><strong>Description:</strong> {{ product.description }}</p>
+      <p><strong>Category:</strong> {{ product.category }}</p>
+      <p><strong>Price:</strong> {{ product.price | currency }}</p>
+      <p><strong>Stock:</strong> {{ product.stock }}</p>
+
+      <div *ngIf="product.stock > 0" class="purchase-row">
+        <mat-form-field appearance="fill" class="qty-picker">
+          <mat-label>Quantity</mat-label>
+          <input matInput type="number" [(ngModel)]="quantity" min="1" [max]="product.stock">
+        </mat-form-field>
+
+        <button mat-button>Add to Cart</button>
+      </div>
+
+      <button mat-button (click)="goBack()">Back to Products</button>
+    </div>
+  </div>
+</mat-card>

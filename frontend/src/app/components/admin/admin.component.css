@@ -1,12 +1,10 @@
-.app-demo {
-    padding: 2rem;
-    background-color: var(--background-color);
-    font-family: serif;
-    color: var(--text-color);
-    min-height: 80vh;
-  }
-  
-  .demo-card {
+.page-container {
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+}
+
+.info-card {
     background-color: var(--secondary-color);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -15,9 +13,9 @@
     max-width: 600px;
     margin: 2rem auto;
     text-align: center;
-  }
-  
-  button {
+}
+
+.custom-button {
     border: none;
     padding: 10px 20px;
     margin-top: 1.5rem;
@@ -26,13 +24,9 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     font-family: inherit;
-  }
-  
-  button {
     background-color: var(--button-bg);
-  }
-  
-  button:hover {
+}
+
+.custom-button:hover {
     background-color: var(--button-hover-bg); 
-  }
-  
+}

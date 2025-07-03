@@ -21,3 +21,6 @@
     /* Borders or cards */
     --border-color: var(--butter);          /* Light border/background accent */
   }
+.cdk-overlay-container {
+  z-index: 1000 !important;
+}
