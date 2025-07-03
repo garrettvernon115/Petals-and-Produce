@@ -54,6 +54,21 @@ public class AuthController {
                 .body("Invalid credentials");
         }
     }
+        @DeleteMapping("/deleteAccount")
+    public ResponseEntity<?> deleteAccount(@RequestBody Map<String, String> payload) {
+        String name = payload.get("name");
+        if (name == null || name.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Missing name field");
+        }
+
+        User user = userRepository.findByUsername(name);
+        if (user == null) {
+            return ResponseEntity.ok("No user found to delete"); 
+        }
+
+        userRepository.delete(user);
+        return ResponseEntity.ok("User deleted");
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
