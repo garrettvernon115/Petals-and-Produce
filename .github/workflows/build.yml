@@ -1,0 +1,40 @@
+name: CI - Build Backend and Frontend
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Java (for Backend)
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Backend with Maven
+        run: mvn -f backend/pom.xml clean install
+
+      - name: Set Up Node.js (for Frontend)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Build Frontend
+        run: ng build --configuration=production
+        working-directory: frontend
