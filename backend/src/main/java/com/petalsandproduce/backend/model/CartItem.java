@@ -8,23 +8,21 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int productId;
+    private long productId;
     private int quantity;
 
-    public CartItem() {
+    public CartItem() {}
 
-    }
-
-    public CartItem(int productId, int quantity) {
+    public CartItem(long productId, int quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return this.productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
