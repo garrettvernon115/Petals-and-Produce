@@ -26,8 +26,8 @@ import com.petalsandproduce.backend.repository.CartRepository;
 import com.petalsandproduce.backend.request.AddToCartRequest;
 import com.petalsandproduce.backend.service.ProductService;
 
-@EnableJpaRepositories("com.petalsandproduce.backend.*")
- @ComponentScan(basePackages = { "com.petalsandproduce.backend.*" })
+//@EnableJpaRepositories("com.petalsandproduce.backend.*")
+ //@ComponentScan(basePackages = { "com.petalsandproduce.backend.*" })
  @EntityScan("com.petalsandproduce.backend.*")
 
 @RestController
@@ -43,9 +43,9 @@ public class CartController {
     @PostMapping("/addToCart")
     public ResponseEntity<?> addItemToCart(@RequestBody AddToCartRequest cr) {
         // Testing user authentication
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        System.out.println(currentUsername);
+        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //String currentUsername = authentication.getName();
+       // System.out.println(currentUsername);
         // Retrieve the cart 
         Optional<Cart> cart = cartRepository.findById(cr.getId());
         // Check for bad requests

@@ -2,17 +2,18 @@ package com.petalsandproduce.backend.model;
 
 import java.util.ArrayList;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+@Entity
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private int userId;
-    private int sessionId;
+    private String sessionId;
     private ArrayList<CartItem> cartItems;
 
     public Cart(int userId) {
@@ -31,11 +32,11 @@ public class Cart {
         this.userId = userId;
     }
 
-    public int getSessionId() {
+    public String getSessionId() {
         return this.sessionId;
     }
 
-    public void setSessionId(int sessionId) {
+    public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
