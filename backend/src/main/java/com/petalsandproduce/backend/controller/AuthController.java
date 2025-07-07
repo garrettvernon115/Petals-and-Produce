@@ -12,6 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,17 +32,42 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody User loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername(), loginRequest.getPassword()
+                )
             );
 
             String token = jwtUtil.generateToken(authentication.getName());
-            return ResponseEntity.ok(token);
+            User user = userRepository.findByUsername(loginRequest.getUsername());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("role", user.getRole());
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid credentials");
         }
+    }
+        @DeleteMapping("/deleteAccount")
+    public ResponseEntity<?> deleteAccount(@RequestBody Map<String, String> payload) {
+        String name = payload.get("name");
+        if (name == null || name.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Missing name field");
+        }
+
+        User user = userRepository.findByUsername(name);
+        if (user == null) {
+            return ResponseEntity.ok("No user found to delete"); 
+        }
+
+        userRepository.delete(user);
+        return ResponseEntity.ok("User deleted");
     }
 
     @PostMapping("/register")

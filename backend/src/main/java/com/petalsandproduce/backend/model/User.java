@@ -26,7 +26,7 @@ public class User {
 
     protected User() {}
 
-    public User(String name, String Username, String email, String password, Role role) {
+    public User(String name, String username, String email, String password, Role role) {
         this.name = Objects.requireNonNull(name);
         this.username = Objects.requireNonNull(username);
         this.email = Objects.requireNonNull(email);

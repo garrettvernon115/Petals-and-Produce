@@ -6,8 +6,8 @@ import { MatSnackBarModule, MatSnackBar, MatSnackBarConfig } from '@angular/mate
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
-
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -30,20 +30,34 @@ export class LoginComponent {
   username = '';
   password = '';
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar,     private http: HttpClient,     private router: Router) {}
 
 
 onSubmit() {
-  const config: MatSnackBarConfig = {
-    duration: 3000,
-    verticalPosition: 'top' as const,
-    horizontalPosition: 'center' as const
+  const loginData = {
+    username: this.username,
+    password: this.password
   };
 
-  if (this.username === 'test' && this.password === 'password') {
-    this.snackBar.open('Login successful!', 'Close', config);
-  } else {
-    this.snackBar.open('Login failed. Please try again.', 'Close', config);
-  }
+  this.http.post<any>('/api/auth/login', loginData, { withCredentials: true }).subscribe({
+    next: (res) => {
+      localStorage.setItem('authToken', res.token);
+      localStorage.setItem('role', res.role);
+      localStorage.setItem('loggedIn', 'true');
+
+      this.snackBar.open('Login successful!', 'Close');
+
+      // Route based on role
+      const role = res.role?.toUpperCase();
+      if (role === 'ADMIN') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/orders']);
+      }
+    },
+    error: () => {
+      this.snackBar.open('Login failed.', 'Close');
+    }
+  });
 }
 }
