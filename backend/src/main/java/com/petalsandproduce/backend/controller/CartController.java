@@ -43,9 +43,9 @@ public class CartController {
     @PostMapping("/addToCart")
     public ResponseEntity<?> addItemToCart(@RequestBody AddToCartRequest cr) {
         // Testing user authentication
-        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //String currentUsername = authentication.getName();
-       // System.out.println(currentUsername);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        System.out.println(currentUsername);
         // Retrieve the cart 
         Optional<Cart> cart = cartRepository.findById(cr.getId());
         // Check for bad requests
