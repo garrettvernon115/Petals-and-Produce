@@ -1,6 +1,6 @@
 package com.petalsandproduce.backend.service;
 import com.petalsandproduce.backend.model.Cart;
-import com.petalsandproduce.backend.model.CartItem;
+import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.repository.CartRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,22 +12,25 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
-    Cart findByUserId(long userId) {
-        return cartRepository.findByUserId(userId);
+    public Cart getOrCreateCart(User user, String sessionId) {
+        Cart cart;
+        if (user != null) {
+            cart = cartRepository.findByUserId(user.getId());
+            if (cart == null) {
+                cart = new Cart(user);
+                cartRepository.save(cart);
+            }
+        } else {
+            cart = cartRepository.findBySessionId(sessionId);
+            if (cart == null) {
+                cart = new Cart(sessionId);
+                cartRepository.save(cart);
+            }
+        }
+        return cart;
     }
-    Cart findBySessionId(String sessionId) {
-        return cartRepository.findBySessionId(sessionId);
-    }
-    void deleteByUserID(long userId) {
-        cartRepository.deleteByUserId(userId);
-    }
-    void deleteBySessionId(String sessionId) {
-        cartRepository.deleteBySessionId(sessionId);
-    }
-    void addItemToCart(CartItem cartItem) {
-        
-    }
-    void deleteItemFromCart(CartItem cartItem) {
 
+    public void saveCart(Cart cart) {
+        cartRepository.save(cart);
     }
 }

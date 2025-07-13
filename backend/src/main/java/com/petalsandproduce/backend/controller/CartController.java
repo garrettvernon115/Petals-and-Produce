@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.petalsandproduce.backend.exception.ProductNotFoundException;
 import com.petalsandproduce.backend.model.Cart;
 import com.petalsandproduce.backend.model.CartItem;
+import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.repository.CartRepository;
 import com.petalsandproduce.backend.request.AddToCartRequest;
+import com.petalsandproduce.backend.service.CartService;
 import com.petalsandproduce.backend.service.ProductService;
+
+import jakarta.servlet.http.HttpSession;
 
 //@EnableJpaRepositories("com.petalsandproduce.backend.*")
  //@ComponentScan(basePackages = { "com.petalsandproduce.backend.*" })
@@ -32,36 +36,39 @@ public class CartController {
     private CartRepository cartRepository;
 
     @Autowired
+    private CartService cartService;
+
+    @Autowired
     private ProductService productService;
 
     @PostMapping("/addToCart")
-    public ResponseEntity<?> addItemToCart(@RequestBody AddToCartRequest cr) {
-        // Testing user authentication
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        System.out.println(currentUsername);
-        // Retrieve the cart 
-        Optional<Cart> cart = cartRepository.findById(cr.getId());
-        // Check for bad requests
+    public ResponseEntity<?> addItemToCart(@RequestBody AddToCartRequest cr, HttpSession session) {
+        // Get authenticated user or null
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = null;
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            currentUser = (User) auth.getPrincipal();
+        }
+
+        // Validate product
         try {
             productService.findProductById(cr.getProductId());
         } catch (ProductNotFoundException e) {
-            return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body("This item doesn't exist");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This item doesn't exist");
         }
-        if (cr.getQuantity() < 0) {
-            return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body("Quantity can not be a negative number");
-        }
-        
-        CartItem item = new CartItem(cr.getProductId(),cr.getQuantity());
 
-        if (!cart.isPresent()) {
-            // Create a new cart
+        if (cr.getQuantity() <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quantity must be positive");
         }
-        cart.get().addToCart(item);
-        return ResponseEntity.ok("Product has been added! Probably.");
+
+        // Create or retrieve cart
+        Cart cart = cartService.getOrCreateCart(currentUser, session.getId());
+
+        // Add item
+        CartItem item = new CartItem(cr.getProductId(), cr.getQuantity());
+        cart.addToCart(item);
+        cartService.saveCart(cart);
+
+        return ResponseEntity.ok("Item added to cart successfully.");
     }
 }
