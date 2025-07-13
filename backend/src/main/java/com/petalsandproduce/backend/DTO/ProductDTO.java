@@ -1,5 +1,7 @@
 package com.petalsandproduce.backend.DTO;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -16,13 +18,13 @@ public class ProductDTO {
 
     @NotNull(message = "Price is required")
     @PositiveOrZero(message = "Price must be 0 or more")
-    private Double price;
+    private BigDecimal price;
     
     private String imageUrl;
 
     public ProductDTO() {}
 
-    public ProductDTO(Long id, String name, String category, Double price, String imageUrl) {
+    public ProductDTO(Long id, String name, String category, BigDecimal price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -42,7 +44,7 @@ public class ProductDTO {
         return category;
     }
 
-    public Double getPrice() {
+    public @NotNull(message = "Price is required") @PositiveOrZero(message = "Price must be 0 or more") BigDecimal getPrice() {
         return price;
     }
 
@@ -63,7 +65,7 @@ public class ProductDTO {
         this.category = category;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(@NotNull(message = "Price is required") @PositiveOrZero(message = "Price must be 0 or more") BigDecimal price) {
         this.price = price;
     }
 

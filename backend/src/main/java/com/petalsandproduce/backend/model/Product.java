@@ -1,5 +1,7 @@
 package com.petalsandproduce.backend.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +16,7 @@ public class Product {
 
     private String name;
     private String description; 
-    private double price;
+    private BigDecimal price;
     private String imageUrl;    
     private String category;    
     private int stock;          
@@ -45,11 +47,11 @@ public class Product {
         this.description = description;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
