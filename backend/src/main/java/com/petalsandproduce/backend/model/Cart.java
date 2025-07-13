@@ -14,7 +14,7 @@ public class Cart {
     private long id;
     private int userId;
     private String sessionId;
-    private ArrayList<CartItem> cartItems;
+    private ArrayList<CartItem> cartItems = new ArrayList<>();
 
     public Cart(int userId) {
         this.userId = userId;

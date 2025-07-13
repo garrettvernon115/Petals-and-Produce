@@ -1,7 +1,5 @@
 package com.petalsandproduce.backend.request;
 
-import com.petalsandproduce.backend.model.Cart;
-
 public class AddToCartRequest {
     private long id;
     private long productId;
