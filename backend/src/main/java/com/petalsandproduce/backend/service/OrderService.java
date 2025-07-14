@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import com.petalsandproduce.backend.model.OrderStatus;
 import com.petalsandproduce.backend.model.Product;
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.repository.CartRepository;
-import com.petalsandproduce.backend.repository.OrderItemRepository;
 import com.petalsandproduce.backend.repository.OrderRepository;
 import com.petalsandproduce.backend.repository.ProductRepository;
 import com.petalsandproduce.backend.repository.UserRepository;
@@ -35,8 +35,6 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
 
     @Autowired
     private CartRepository cartRepository;
@@ -44,9 +42,10 @@ public class OrderService {
     @Transactional
     public void submitOrder(OrderRequestDTO orderRequest, Principal principal) {
         String username = principal.getName();
+        
         User user = userRepository.findByUsername(username);
-            if (user == null) {
-                throw new RuntimeException("User not found");
+        if (user == null) {
+            throw new RuntimeException("User not found");
         }
 
         Order order = new Order();
@@ -65,7 +64,7 @@ public class OrderService {
             orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(item.getQuantity());
-            orderItem.setPrice(product.getPrice()); // Capture current price
+            orderItem.setPrice(product.getPrice());
 
             total = total.add(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
             orderItems.add(orderItem);
@@ -76,11 +75,11 @@ public class OrderService {
 
         orderRepository.save(order); 
 
-       
-        Cart cart = cartRepository.findByUserId(user.getId());
-        if (cart != null) {
-            cart.getCartItems().clear();
+        Optional<Cart> optionalCart = cartRepository.findByUserId(user.getId());
+
+        optionalCart.ifPresent(cart -> {
+            cart.getItems().clear();
             cartRepository.save(cart);
-        }
+        });
     }
 }
