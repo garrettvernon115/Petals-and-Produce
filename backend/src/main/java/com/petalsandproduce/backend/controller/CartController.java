@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,5 +90,33 @@ public class CartController {
         cartService.updateItemQuantity(cart, request.getProductId(), request.getNewQuantity());
  
         return ResponseEntity.ok("Cart updated successfully.");
+    }
+
+    @DeleteMapping("/cart/remove/{productId}")
+    public ResponseEntity<?> removeCartItem(@PathVariable long productId, HttpSession session) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = null;
+
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            currentUser = (User) auth.getPrincipal();
+        }
+
+        Cart cart = cartService.getOrCreateCart(currentUser, session.getId());
+
+        boolean found = false;
+        for (CartItem item : cart.getCartItems()) {
+            if (item.getProductId() == productId) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Item not found in cart.");
+        }
+
+        cartService.removeItemFromCart(cart, productId);
+        return ResponseEntity.ok("Item successfully removed from cart.");
     }
 }

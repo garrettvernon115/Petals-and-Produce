@@ -54,5 +54,20 @@ public class CartService {
         cartRepository.save(cart);
     }
 }
- 
+
+    public void removeItemFromCart(Cart cart, long productId) {
+        CartItem toRemove = null;
+
+        for (CartItem item : cart.getCartItems()) {
+            if (item.getProductId() == productId) {
+                toRemove = item;
+                break;
+            }   
+        }
+
+        if (toRemove != null) {
+            cart.getCartItems().remove(toRemove);
+            cartRepository.save(cart);
+        }
+    } 
 }
