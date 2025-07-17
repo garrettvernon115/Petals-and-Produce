@@ -30,6 +30,25 @@ public class CartService {
         return cart;
     }
 
+    // What if want it to explode on failure
+    public Cart getCart(User user, String sessionId) {
+        Cart cart;
+        if (user != null) {
+            cart = cartRepository.findByUserId(user.getId());
+            if (cart == null) {
+                cart = new Cart(user);
+                cartRepository.save(cart);
+            }
+        } else {
+            cart = cartRepository.findBySessionId(sessionId);
+            if (cart == null) {
+                System.out.println("The cart does not exist");
+                return null;
+            }
+        }
+        return cart;
+    }
+
     public void saveCart(Cart cart) {
         cartRepository.save(cart);
     }
