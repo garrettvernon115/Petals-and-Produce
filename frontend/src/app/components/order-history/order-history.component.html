@@ -1,1 +1,30 @@
-<p>order-history works!</p>
+<h2 class="title">My Orders</h2>
+
+<ng-container *ngIf="orders$ | async as orders; else loading">
+  <div *ngIf="orders.length === 0" class="empty">
+    You haven’t placed any orders yet 🌱
+  </div>
+
+  <div *ngFor="let o of orders" class="order-card">
+    <header>
+      <span class="date">{{ o.orderDate | date: 'mediumDate' }}</span>
+      <span class="status" [ngClass]="o.status.toLowerCase()">{{ o.status }}</span>
+    </header>
+
+    <ul class="items">
+      <li *ngFor="let it of o.items">
+        <span>{{ it.quantity }} × {{ it.name }}</span>
+        <span>{{ it.unitPrice | currency }}</span>
+      </li>
+    </ul>
+
+    <footer>
+      <strong>Total:</strong>
+      <span class="total">{{ total(o) | currency }}</span>
+    </footer>
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <p class="loading">Loading…</p>
+</ng-template>

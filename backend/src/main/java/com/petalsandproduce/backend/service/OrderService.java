@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.petalsandproduce.backend.DTO.CartItemDTO;
 import com.petalsandproduce.backend.DTO.OrderRequestDTO;
+import com.petalsandproduce.backend.DTO.OrderResponseDTO;
+import com.petalsandproduce.backend.DTO.OrderItemDTO;
 import com.petalsandproduce.backend.model.Cart;
 import com.petalsandproduce.backend.model.Order;
 import com.petalsandproduce.backend.model.OrderItem;
@@ -82,5 +84,33 @@ public class OrderService {
             cart.getCartItems().clear();
             cartRepository.save(cart);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponseDTO> getOrdersForUser(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) throw new RuntimeException("User not found");
+
+        List<Order> orders = orderRepository.findByUserOrderByOrderDateDesc(user);
+        List<OrderResponseDTO> result = new ArrayList<>();
+
+        for (Order order : orders) {
+            OrderResponseDTO dto = new OrderResponseDTO();
+            dto.setId(order.getId());
+            dto.setOrderDate(order.getOrderDate());
+            dto.setStatus(order.getStatus().name());
+
+            List<OrderItemDTO> items = new ArrayList<>();
+            for (OrderItem oi : order.getItems()) {
+                OrderItemDTO itemDto = new OrderItemDTO();
+                itemDto.setName(oi.getProduct().getName());
+                itemDto.setQuantity(oi.getQuantity());
+                itemDto.setUnitPrice(oi.getPrice());
+                items.add(itemDto);
+            }
+            dto.setItems(items);
+            result.add(dto);
+        }
+        return result;
     }
 }
