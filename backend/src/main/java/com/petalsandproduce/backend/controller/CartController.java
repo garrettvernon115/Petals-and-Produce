@@ -1,5 +1,6 @@
 package com.petalsandproduce.backend.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.petalsandproduce.backend.DTO.CartItemResponse;
 import com.petalsandproduce.backend.exception.ProductNotFoundException;
 import com.petalsandproduce.backend.model.Cart;
 import com.petalsandproduce.backend.model.CartItem;
+import com.petalsandproduce.backend.model.Product;
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.repository.CartRepository;
 import com.petalsandproduce.backend.request.AddToCartRequest;
@@ -82,15 +85,25 @@ public class CartController {
             currentUser = (User) auth.getPrincipal();
         }
         Cart cart = cartService.getCart(currentUser, session.getId());
-        if (cart != null) {
-            List<CartItem> items = cart.getCartItems();
-            String s = "";
-            for (CartItem i : items) {
-                s = s + i.getProductId() + ", ";
+
+        if (cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cart not found");
+        }
+
+        List<CartItemResponse> response = new ArrayList<>();
+
+        for (CartItem item : cart.getCartItems()) {
+            Product product = productService.findProductById(item.getProductId());
+            if (product != null) {
+                response.add(new CartItemResponse(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    item.getQuantity()
+                ));
             }
-            return ResponseEntity.ok("Cart item IDs = " + s);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("There's no cart here");
+        }
+
+        return ResponseEntity.ok(response);
         }
     }
-}
