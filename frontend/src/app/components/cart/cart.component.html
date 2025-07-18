@@ -63,7 +63,7 @@
   <p class="total">
     <strong>Total: ${{ getTotal() | number: '1.2-2' }}</strong>
   </p>
-  <button mat-raised-button color="primary" class="checkout-button">
-    Proceed to Checkout
-  </button>
+<button mat-raised-button color="primary" class="checkout-button" (click)="placeOrder()">
+  Proceed to Checkout
+</button>
 </div>
