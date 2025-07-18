@@ -24,3 +24,17 @@
 .cdk-overlay-container {
   z-index: 1000 !important;
 }
+.custom-dialog-container .mat-mdc-dialog-surface {
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 12px;
+  color: var(--text-color);
+  text-align: center;
+  background-color: var(--apricot);
+
+
+  top: 25% !important;
+  transform: translateY(-75%) !important;
+  position: relative;
+}

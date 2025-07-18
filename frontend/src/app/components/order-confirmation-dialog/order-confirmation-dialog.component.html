@@ -1,0 +1,21 @@
+<div class="confirmation-dialog">
+  <button mat-icon-button class="close-button" (click)="closeDialog()" aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <h2>Order Confirmed!</h2>
+
+  <p><strong>Order #: {{ data.orderNumber }}</strong></p>
+
+  <p>
+    Thank you for your purchase! Your order will be ready for
+    <strong>local pickup</strong> within 24 hours.
+  </p>
+
+  <p>
+    <strong>Pickup Location:</strong><br />
+    Petals & Produce<br />
+    123 Main Street<br />
+    Yourtown, OH 12345
+  </p>
+</div>

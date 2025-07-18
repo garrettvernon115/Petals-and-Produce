@@ -1,0 +1,25 @@
+.confirmation-dialog {
+  background-color: var(--apricot);
+  padding: 2rem;
+  color: var(--text-color);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.confirmation-dialog h2 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.confirmation-dialog p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.close-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: var(--primary-color);
+}
