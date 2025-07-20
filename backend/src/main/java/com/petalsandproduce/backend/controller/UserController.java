@@ -3,12 +3,15 @@ package com.petalsandproduce.backend.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
- 
+
+import com.petalsandproduce.backend.model.Cart;
 import com.petalsandproduce.backend.model.Role;
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.request.RegistrationRequest;
+import com.petalsandproduce.backend.service.CartService;
 import com.petalsandproduce.backend.service.UserService;
- 
+
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
  
@@ -17,10 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserController {
  
     private final UserService userService;
+    private final CartService cartService;
     private final PasswordEncoder passwordEncoder;
  
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, CartService cartService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.cartService = cartService;
         this.passwordEncoder = passwordEncoder;
     }
  
@@ -62,7 +67,7 @@ public class UserController {
     }
  
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody RegistrationRequest rr) {
+    public ResponseEntity<?> loginUser(@RequestBody RegistrationRequest rr, HttpSession session) {
         User user = userService.findByEmail(rr.getEmail());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -70,6 +75,10 @@ public class UserController {
         }
  
         if (passwordEncoder.matches(rr.getPassword(), user.getPassword())) {
+            Cart cart = cartService.getCart(null, session.getId());
+            if (cart != null) {
+                cartService.saveCart(cart);
+            }
             return ResponseEntity.ok("Login successful!");
         }
  
