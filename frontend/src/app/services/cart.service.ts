@@ -9,6 +9,7 @@ export interface CartItem {
   quantity: number;
   total: number;
   imageUrl: string;
+  imageUrl: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +29,7 @@ export class CartService {
   removeItem(productId: number): Observable<any> {
     return this.http.delete(`/api/cart/remove/${productId}`, { responseType: 'text' });
   }
+
 
   addToCart(productId: number, quantity: number): Observable<string> {
     return this.http.post(`${this.baseUrl}/addToCart`, { productId, quantity }, { responseType: 'text' });

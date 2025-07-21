@@ -30,6 +30,7 @@ export class CartComponent implements OnInit {
   displayedColumns: string[] = ['image', 'name', 'price', 'quantity', 'subtotal', 'remove'];
   dataSource = new MatTableDataSource<CartItem>();
 
+
   @ViewChild(MatTable) table!: MatTable<any>;
 
   constructor(
@@ -63,6 +64,7 @@ export class CartComponent implements OnInit {
       next: () => {
         const updatedItems = this.dataSource.data.filter(item => item.productId !== productId);
         this.dataSource.data = updatedItems; // triggers table refresh
+
       },
       error: (err) => console.error('Error removing item:', err)
     });
@@ -70,6 +72,7 @@ export class CartComponent implements OnInit {
 
   getTotal(): number {
     return this.dataSource.data.reduce((total, item) => total + item.total, 0);
+
   }
 
   placeOrder(): void {
