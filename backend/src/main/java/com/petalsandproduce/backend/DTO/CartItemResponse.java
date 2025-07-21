@@ -8,13 +8,15 @@ public class CartItemResponse {
     private BigDecimal price;
     private int quantity;
     private BigDecimal total;
+    private String imageUrl;
 
-    public CartItemResponse(Long productId, String name, BigDecimal price, int quantity) {
+    public CartItemResponse(Long productId, String name, BigDecimal price, int quantity, String imageUrl) {
         this.productId = productId;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.total = price.multiply(BigDecimal.valueOf(quantity));
+        this.imageUrl = imageUrl;
     }
 
     public Long getProductId() {
@@ -35,5 +37,8 @@ public class CartItemResponse {
 
     public BigDecimal getTotal() {
         return total;
+    }
+    public String getImageUrl() {
+        return imageUrl;
     }
 }
