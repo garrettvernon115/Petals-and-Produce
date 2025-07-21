@@ -32,4 +32,8 @@ export class CartService {
   }
 
 
+   submitOrder(items: { productId: number; quantity: number }[]): Observable<any> {
+    return this.http.post(`${this.baseUrl}/orders`, { items }, { responseType: 'text' });
+  }
+
 }
