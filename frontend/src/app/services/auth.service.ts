@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -8,21 +9,20 @@ import { Router } from '@angular/router';
 export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(username: string, password: string) {
-    return this.http.post<any>('/api/auth/login', { username, password }).subscribe({
+  login(username: string, password: string, snackBar?: MatSnackBar) {
+    this.http.post<any>('/api/auth/login', { username, password }).subscribe({
       next: (res) => {
-        localStorage.setItem('token', res.token);
+        localStorage.setItem('token', res.token); 
         localStorage.setItem('role', res.role);
         localStorage.setItem('loggedIn', 'true');
 
-        if (res.role === 'ADMIN') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.router.navigate(['/orders']);
-        }
+        if (snackBar) snackBar.open('Login successful!', 'Close', { duration: 3000 });
+
+        const role = res.role?.toUpperCase();
+        this.router.navigate([role === 'ADMIN' ? '/admin' : '/orders']);
       },
       error: () => {
-        alert('Login failed');
+        if (snackBar) snackBar.open('Login failed.', 'Close', { duration: 3000 });
       }
     });
   }
@@ -33,6 +33,10 @@ export class AuthService {
 
   getUserRole(): string {
     return localStorage.getItem('role') || '';
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');  
   }
 
   logout(): void {

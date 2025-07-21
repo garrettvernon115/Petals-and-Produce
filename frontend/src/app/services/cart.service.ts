@@ -1,5 +1,5 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface CartItem {
@@ -33,5 +33,18 @@ export class CartService {
     return this.http.post(`${this.baseUrl}/addToCart`, { productId, quantity }, { responseType: 'text' });
   }
 
+  submitOrder(items: { productId: number; quantity: number }[]): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http.post(`${this.baseUrl}/orders`, { items }, {
+      headers,
+      responseType: 'text'
+    });
+  }
 
 }

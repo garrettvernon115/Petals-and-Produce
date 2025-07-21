@@ -1,13 +1,8 @@
 package com.petalsandproduce.backend.service;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.petalsandproduce.backend.DTO.CartItemDTO;
 import com.petalsandproduce.backend.DTO.OrderRequestDTO;
@@ -22,6 +17,12 @@ import com.petalsandproduce.backend.repository.OrderItemRepository;
 import com.petalsandproduce.backend.repository.OrderRepository;
 import com.petalsandproduce.backend.repository.ProductRepository;
 import com.petalsandproduce.backend.repository.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
@@ -42,11 +43,12 @@ public class OrderService {
     private CartRepository cartRepository;
 
     @Transactional
-    public void submitOrder(OrderRequestDTO orderRequest, Principal principal) {
-        String username = principal.getName();
-        User user = userRepository.findByUsername(username);
-            if (user == null) {
-                throw new RuntimeException("User not found");
+    public void submitOrder(OrderRequestDTO orderRequest) {
+        User user = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            user = (User) authentication.getPrincipal();
         }
 
         Order order = new Order();
@@ -59,13 +61,13 @@ public class OrderService {
 
         for (CartItemDTO item : orderRequest.getItems()) {
             Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(item.getQuantity());
-            orderItem.setPrice(product.getPrice()); // Capture current price
+            orderItem.setPrice(product.getPrice());
 
             total = total.add(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
             orderItems.add(orderItem);
@@ -74,13 +76,14 @@ public class OrderService {
         order.setTotalAmount(total);
         order.setItems(orderItems);
 
-        orderRepository.save(order); 
+        orderRepository.save(order);
 
-       
-        Cart cart = cartRepository.findByUserId(user.getId());
-        if (cart != null) {
-            cart.getCartItems().clear();
-            cartRepository.save(cart);
+        if (user != null) {
+            Cart cart = cartRepository.findByUserId(user.getId());
+            if (cart != null) {
+                cart.getCartItems().clear();
+                cartRepository.save(cart);
+            }
         }
     }
 }

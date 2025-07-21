@@ -2,13 +2,11 @@ import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBarModule, MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-
+import { AuthService } from '../../services/auth.service'; // <-- Make sure this path is correct
 
 @Component({
   selector: 'app-login',
@@ -30,34 +28,9 @@ export class LoginComponent {
   username = '';
   password = '';
 
-  constructor(private snackBar: MatSnackBar,     private http: HttpClient,     private router: Router) {}
+  constructor(private snackBar: MatSnackBar, private authService: AuthService) {}
 
-
-onSubmit() {
-  const loginData = {
-    username: this.username,
-    password: this.password
-  };
-
-  this.http.post<any>('/api/auth/login', loginData, { withCredentials: true }).subscribe({
-    next: (res) => {
-      localStorage.setItem('authToken', res.token);
-      localStorage.setItem('role', res.role);
-      localStorage.setItem('loggedIn', 'true');
-
-      this.snackBar.open('Login successful!', 'Close');
-
-      // Route based on role
-      const role = res.role?.toUpperCase();
-      if (role === 'ADMIN') {
-        this.router.navigate(['/admin']);
-      } else {
-        this.router.navigate(['/orders']);
-      }
-    },
-    error: () => {
-      this.snackBar.open('Login failed.', 'Close');
-    }
-  });
-}
+  onSubmit(): void {
+    this.authService.login(this.username, this.password, this.snackBar);
+  }
 }

@@ -72,11 +72,33 @@ export class CartComponent implements OnInit {
     return this.dataSource.data.reduce((total, item) => total + item.total, 0);
   }
 
-  placeOrder(): void {
-    const orderNumber = 'ORD-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-    this.dialog.open(OrderConfirmationDialogComponent, {
-      data: { orderNumber },
-      panelClass: 'custom-dialog-container'
-    });
-  }
+placeOrder(): void {
+  const items = this.dataSource.data.map(item => ({
+    productId: item.productId,
+    quantity: item.quantity
+  }));
+
+  const token = localStorage.getItem('token');
+  const headers: any = token ? { Authorization: `Bearer ${token}` } : {};
+
+  this.cartService.submitOrder(items).subscribe({
+    next: () => {
+      const orderNumber = 'ORD-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+
+      this.dialog.open(OrderConfirmationDialogComponent, {
+        data: {
+          orderNumber,
+          items: this.dataSource.data,
+          total: this.getTotal()
+        },
+        panelClass: 'custom-dialog-container'
+      });
+
+      this.dataSource.data = [];
+    },
+    error: (err) => console.error('Order submission failed:', err)
+  });
+}
+
+
 }
