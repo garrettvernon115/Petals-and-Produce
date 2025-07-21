@@ -73,10 +73,28 @@ export class CartComponent implements OnInit {
   }
 
   placeOrder(): void {
-    const orderNumber = 'ORD-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-    this.dialog.open(OrderConfirmationDialogComponent, {
-      data: { orderNumber },
-      panelClass: 'custom-dialog-container'
+    const items = this.dataSource.data.map(item => ({
+      productId: item.productId,
+      quantity: item.quantity
+    }));
+
+    this.cartService.submitOrder(items).subscribe({
+      next: (orderId: number) => {
+        this.dialog.open(OrderConfirmationDialogComponent, {
+          data: {
+            orderNumber: `ORD-${orderId.toString().padStart(6, '0')}`,
+            items: this.dataSource.data,
+            total: this.getTotal()
+          },
+          panelClass: 'custom-dialog-container'
+        });
+
+        this.dataSource.data = [];
+      },
+      error: (err) => console.error('Order submission failed:', err)
     });
   }
+
+
+
 }

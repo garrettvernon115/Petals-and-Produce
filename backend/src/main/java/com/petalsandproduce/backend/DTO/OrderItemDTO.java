@@ -7,6 +7,12 @@ public class OrderItemDTO {
     private String name;
     private int quantity;
     private BigDecimal unitPrice;
+    
+        public OrderItemDTO(String name, BigDecimal unitPrice, int quantity) {
+        this.name = name;
+        this.unitPrice = unitPrice;
+        this.quantity = quantity;
+    }
 
     public String getName() {
         return name;

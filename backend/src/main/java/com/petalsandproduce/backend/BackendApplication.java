@@ -21,6 +21,7 @@ public WebMvcConfigurer corsConfigurer() {
             registry.addMapping("/**")
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true)
                 .allowedHeaders("*");
         }
     };

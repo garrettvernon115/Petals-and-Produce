@@ -1,40 +1,43 @@
 /* 🌿 Petals & Produce Color Palette - https://coolors.co/palette/ccd5ae-e9edc9-fefae0-faedcd-d4a373 */
 :root {
-    --sage:       #CCD5AE;
-    --mint:       #E9EDC9;
-    --butter:     #FEFAE0;
-    --apricot:    #FAEDCD;
-    --terra:      #D4A373;
-    --darkerterra: #b25e31;
-  
-    /* Role-based color usage */
-    --primary-color: var(--terra);          /* Branding & highlights */
-    --secondary-color: var(--sage);         /* Accent sections or highlights */
-    --background-color: var(--mint);        /* Page background */
-    --text-color: #3e2a2a;                  /* Main text */
-  
-    /* Buttons */
-    --button-bg: var(--terra);            /* Normal button background */
-    --button-hover-bg: var(--darkerterra);        /* Hover effect for buttons */
-    --button-text-color: white; /* Keeps contrast high */
-  
-    /* Borders or cards */
-    --border-color: var(--butter);          /* Light border/background accent */
-  }
-.cdk-overlay-container {
-  z-index: 1000 !important;
+  --sage:       #CCD5AE;
+  --mint:       #E9EDC9;
+  --butter:     #FEFAE0;
+  --apricot:    #FAEDCD;
+  --terra:      #D4A373;
+  --darkerterra: #b25e31;
+
+  /* Role-based color usage */
+  --primary-color: var(--terra);          /* Branding & highlights */
+  --secondary-color: var(--sage);         /* Accent sections or highlights */
+  --background-color: var(--mint);        /* Page background */
+  --text-color: #3e2a2a;                  /* Main text */
+
+  /* Buttons */
+  --button-bg: var(--terra);              /* Normal button background */
+  --button-hover-bg: var(--darkerterra);  /* Hover effect for buttons */
+  --button-text-color: white;             /* Keeps contrast high */
+
+  /* Borders or cards */
+  --border-color: var(--butter);          /* Light border/background accent */
 }
+
+.cdk-overlay-pane.custom-dialog-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style the dialog surface */
 .custom-dialog-container .mat-mdc-dialog-surface {
-  max-width: 400px;
   width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
   padding: 2rem;
   border-radius: 12px;
+  background-color: var(--apricot);
   color: var(--text-color);
   text-align: center;
-  background-color: var(--apricot);
-
-
-  top: 25% !important;
-  transform: translateY(-75%) !important;
-  position: relative;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }

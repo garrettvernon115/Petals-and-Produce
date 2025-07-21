@@ -1,20 +1,18 @@
 package com.petalsandproduce.backend.controller;
 
-import java.security.Principal;
-import java.util.List;
+import com.petalsandproduce.backend.DTO.OrderRequestDTO;
+import com.petalsandproduce.backend.DTO.OrderResponseDTO;
+import com.petalsandproduce.backend.model.User;
+import com.petalsandproduce.backend.service.OrderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-import com.petalsandproduce.backend.DTO.OrderRequestDTO;
-import com.petalsandproduce.backend.service.OrderService;
-import com.petalsandproduce.backend.DTO.OrderResponseDTO;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -24,23 +22,33 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<String> placeOrder(@RequestBody OrderRequestDTO orderRequest, Principal principal) {
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO orderRequest) {
         try {
-            orderService.submitOrder(orderRequest, principal);
-            return ResponseEntity.ok("Order placed successfully.");
+            Long orderId = orderService.submitOrder(orderRequest); 
+        return ResponseEntity.ok(orderId);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Order failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("Order failed: " + e.getMessage());
         }
     }
 
+
+
     @GetMapping
-    public ResponseEntity<?> getUserOrders(Principal principal) {
+    public ResponseEntity<?> getUserOrders() {
         try {
-            String username = principal.getName();
-            List<OrderResponseDTO> orders = orderService.getOrdersForUser(username);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            }
+
+            List<OrderResponseDTO> orders = orderService.getOrdersForUser();
             return ResponseEntity.ok(orders);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving orders");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("Error retrieving orders: " + e.getMessage());
         }
     }
+
+
 }

@@ -13,7 +13,17 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class OrderConfirmationDialogComponent {
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { orderNumber: string },
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      orderNumber: string;
+      items: {
+        name: string;
+        price: number;
+        quantity: number;
+        total: number;
+      }[];
+      total: number;
+    },
     private dialogRef: MatDialogRef<OrderConfirmationDialogComponent>
   ) {}
 
@@ -21,3 +31,4 @@ export class OrderConfirmationDialogComponent {
     this.dialogRef.close();
   }
 }
+

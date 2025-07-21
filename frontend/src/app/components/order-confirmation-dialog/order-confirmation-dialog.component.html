@@ -1,11 +1,32 @@
 <div class="confirmation-dialog">
-  <button mat-icon-button class="close-button" (click)="closeDialog()" aria-label="Close">
-    <mat-icon>close</mat-icon>
-  </button>
+<button mat-icon-button class="close-button" (click)="closeDialog()" aria-label="Close">
+  <mat-icon>close</mat-icon>
+</button>
 
   <h2>Order Confirmed!</h2>
 
   <p><strong>Order #: {{ data.orderNumber }}</strong></p>
+
+  <table class="order-summary">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data.items">
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>${{ item.price | number: '1.2-2' }}</td>
+        <td>${{ item.total | number: '1.2-2' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="total"><strong>Total: ${{ data.total | number: '1.2-2' }}</strong></p>
 
   <p>
     Thank you for your purchase! Your order will be ready for

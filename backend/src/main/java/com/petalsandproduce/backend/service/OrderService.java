@@ -1,116 +1,142 @@
-package com.petalsandproduce.backend.service;
+    package com.petalsandproduce.backend.service;
 
-import java.math.BigDecimal;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
+    import java.math.BigDecimal;
+    import java.util.ArrayList;
+    import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+    import com.petalsandproduce.backend.DTO.CartItemDTO;
+    import com.petalsandproduce.backend.DTO.OrderItemDTO;
+    import com.petalsandproduce.backend.DTO.OrderRequestDTO;
+    import com.petalsandproduce.backend.DTO.OrderResponseDTO;
+    import com.petalsandproduce.backend.model.Cart;
+    import com.petalsandproduce.backend.model.Order;
+    import com.petalsandproduce.backend.model.OrderItem;
+    import com.petalsandproduce.backend.model.OrderStatus;
+    import com.petalsandproduce.backend.model.Product;
+    import com.petalsandproduce.backend.model.User;
+    import com.petalsandproduce.backend.repository.CartRepository;
+    import com.petalsandproduce.backend.repository.OrderItemRepository;
+    import com.petalsandproduce.backend.repository.OrderRepository;
+    import com.petalsandproduce.backend.repository.ProductRepository;
+    import com.petalsandproduce.backend.repository.UserRepository;
 
-import com.petalsandproduce.backend.DTO.CartItemDTO;
-import com.petalsandproduce.backend.DTO.OrderRequestDTO;
-import com.petalsandproduce.backend.DTO.OrderResponseDTO;
-import com.petalsandproduce.backend.DTO.OrderItemDTO;
-import com.petalsandproduce.backend.model.Cart;
-import com.petalsandproduce.backend.model.Order;
-import com.petalsandproduce.backend.model.OrderItem;
-import com.petalsandproduce.backend.model.OrderStatus;
-import com.petalsandproduce.backend.model.Product;
-import com.petalsandproduce.backend.model.User;
-import com.petalsandproduce.backend.repository.CartRepository;
-import com.petalsandproduce.backend.repository.OrderItemRepository;
-import com.petalsandproduce.backend.repository.OrderRepository;
-import com.petalsandproduce.backend.repository.ProductRepository;
-import com.petalsandproduce.backend.repository.UserRepository;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.security.core.Authentication;
+    import org.springframework.security.core.context.SecurityContextHolder;
+    import org.springframework.stereotype.Service;
+    import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class OrderService {
+    @Service
+    public class OrderService {
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+        @Autowired
+        private ProductRepository productRepository;
 
-    @Autowired
-    private OrderRepository orderRepository;
+        @Autowired
+        private OrderRepository orderRepository;
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+        @Autowired
+        private OrderItemRepository orderItemRepository;
 
-    @Autowired
-    private CartRepository cartRepository;
+        @Autowired
+        private CartRepository cartRepository;
 
-    @Transactional
-    public void submitOrder(OrderRequestDTO orderRequest, Principal principal) {
-        String username = principal.getName();
-        User user = userRepository.findByUsername(username);
-            if (user == null) {
-                throw new RuntimeException("User not found");
-        }
+        @Transactional
+        public Long submitOrder(OrderRequestDTO orderRequest) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Order order = new Order();
-        order.setUser(user);
-        order.setStatus(OrderStatus.PENDING);
-        order.setPickedUp(false);
-
-        List<OrderItem> orderItems = new ArrayList<>();
-        BigDecimal total = BigDecimal.ZERO;
-
-        for (CartItemDTO item : orderRequest.getItems()) {
-            Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
-
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            orderItem.setProduct(product);
-            orderItem.setQuantity(item.getQuantity());
-            orderItem.setPrice(product.getPrice()); // Capture current price
-
-            total = total.add(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
-            orderItems.add(orderItem);
-        }
-
-        order.setTotalAmount(total);
-        order.setItems(orderItems);
-
-        orderRepository.save(order); 
-
-       
-        Cart cart = cartRepository.findByUserId(user.getId());
-        if (cart != null) {
-            cart.getCartItems().clear();
-            cartRepository.save(cart);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public List<OrderResponseDTO> getOrdersForUser(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) throw new RuntimeException("User not found");
-
-        List<Order> orders = orderRepository.findByUserOrderByOrderDateDesc(user);
-        List<OrderResponseDTO> result = new ArrayList<>();
-
-        for (Order order : orders) {
-            OrderResponseDTO dto = new OrderResponseDTO();
-            dto.setId(order.getId());
-            dto.setOrderDate(order.getOrderDate());
-            dto.setStatus(order.getStatus().name());
-
-            List<OrderItemDTO> items = new ArrayList<>();
-            for (OrderItem oi : order.getItems()) {
-                OrderItemDTO itemDto = new OrderItemDTO();
-                itemDto.setName(oi.getProduct().getName());
-                itemDto.setQuantity(oi.getQuantity());
-                itemDto.setUnitPrice(oi.getPrice());
-                items.add(itemDto);
+            User user = null;
+            if (authentication != null && authentication.isAuthenticated()) {
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof User u) {
+                    user = u;
+                }
             }
-            dto.setItems(items);
-            result.add(dto);
+
+
+            Order order = new Order();
+            order.setUser(user); // This can be null for guest users
+            order.setStatus(OrderStatus.PENDING);
+
+            List<OrderItem> orderItems = new ArrayList<>();
+            BigDecimal total = BigDecimal.ZERO;
+
+            for (CartItemDTO item : orderRequest.getItems()) {
+                Product product = productRepository.findById(item.getProductId())
+                        .orElseThrow(() -> new RuntimeException("Product not found"));
+
+                OrderItem orderItem = new OrderItem();
+                orderItem.setOrder(order);
+                orderItem.setProduct(product);
+                orderItem.setQuantity(item.getQuantity());
+                orderItem.setPrice(product.getPrice());
+
+                total = total.add(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+                orderItems.add(orderItem);
+            }
+
+            order.setTotalAmount(total);
+            order.setItems(orderItems);
+
+            Order savedOrder = orderRepository.save(order);
+
+            if (user != null) {
+                Cart cart = cartRepository.findByUserId(user.getId());
+                if (cart != null) {
+                    cart.getCartItems().clear();
+                    cartRepository.save(cart);
+                }
+            }
+
+            return savedOrder.getId();
         }
-        return result;
+
+
+        @Transactional(readOnly = true)
+        public List<OrderResponseDTO> getOrdersForUser() {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            User user = null;
+            if (authentication != null && authentication.isAuthenticated()) {
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof User u) {
+                    user = u;
+                }
+            }
+
+            if (user == null) {
+                throw new RuntimeException("User not authenticated");
+            }
+
+            List<Order> orders = orderRepository.findByUserOrderByOrderDateDesc(user);
+            List<OrderResponseDTO> response = new ArrayList<>();
+
+            for (Order order : orders) {
+                List<OrderItemDTO> itemDTOs = new ArrayList<>();
+                for (OrderItem item : order.getItems()) {
+                    OrderItemDTO itemDTO = new OrderItemDTO(
+                        item.getProduct().getName(),
+                        item.getPrice(),
+                        item.getQuantity()
+                    );
+                    itemDTOs.add(itemDTO);
+                }
+
+                OrderResponseDTO orderDTO = new OrderResponseDTO(
+                    order.getId(),
+                    order.getTotalAmount(),
+                    order.getStatus().name(),
+                    order.getOrderDate(),
+                    itemDTOs
+                );
+
+                response.add(orderDTO);
+            }
+
+            return response;
+        }
+
     }
-}
