@@ -116,7 +116,8 @@ public class CartController {
                     product.getId(),
                     product.getName(),
                     product.getPrice(),
-                    item.getQuantity()
+                    item.getQuantity(),
+                    product.getImageUrl()
                 ));
             }
         }

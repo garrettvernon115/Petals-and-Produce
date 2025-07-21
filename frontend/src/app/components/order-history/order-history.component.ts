@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Order } from '../../models/order.model';
-import { OrderService } from '../../services/order.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-order-history',
@@ -15,10 +15,10 @@ import { OrderService } from '../../services/order.service';
 export class OrderHistoryComponent implements OnInit {
   orders$!: Observable<Order[]>;
 
-  constructor(private orderSvc: OrderService) {}
+  constructor(private cartSvc: CartService) {}
 
   ngOnInit(): void {
-    this.orders$ = this.orderSvc.getOrders();
+    this.orders$ = this.cartSvc.getOrders();
   }
 
   total(o: Order): number {

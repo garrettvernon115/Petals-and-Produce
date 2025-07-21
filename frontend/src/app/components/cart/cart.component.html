@@ -1,6 +1,6 @@
 <h2>Your Cart</h2>
 
-<table mat-table [dataSource]="cartItems" class="mat-elevation-z2 cart-table">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z2 cart-table">
 
   <!-- Image Column -->
   <ng-container matColumnDef="image">
@@ -64,6 +64,6 @@
     <strong>Total: ${{ getTotal() | number: '1.2-2' }}</strong>
   </p>
 <button mat-raised-button color="primary" class="checkout-button" (click)="placeOrder()">
-  Proceed to Checkout
+  Place Order!
 </button>
 </div>

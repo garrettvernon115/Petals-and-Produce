@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule, MatTable } from '@angular/material/table';
+import { MatTableModule, MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,7 +28,8 @@ import { CartService, CartItem } from '../../services/cart.service';
 })
 export class CartComponent implements OnInit {
   displayedColumns: string[] = ['image', 'name', 'price', 'quantity', 'subtotal', 'remove'];
-  cartItems: CartItem[] = [];
+  dataSource = new MatTableDataSource<CartItem>();
+
 
   @ViewChild(MatTable) table!: MatTable<any>;
 
@@ -45,10 +46,7 @@ export class CartComponent implements OnInit {
   loadCart(): void {
     this.cartService.getCart().subscribe({
       next: (items) => {
-        this.cartItems = items;
-        if (this.table) {
-          this.table.renderRows();
-        }
+        this.dataSource.data = items;
       },
       error: (err) => console.error('Error loading cart:', err)
     });
@@ -64,24 +62,42 @@ export class CartComponent implements OnInit {
   removeItem(productId: number): void {
     this.cartService.removeItem(productId).subscribe({
       next: () => {
-        this.cartItems = this.cartItems.filter(item => item.productId !== productId);
-        if (this.table) {
-          this.table.renderRows(); 
-        }
+        const updatedItems = this.dataSource.data.filter(item => item.productId !== productId);
+        this.dataSource.data = updatedItems; // triggers table refresh
+
       },
       error: (err) => console.error('Error removing item:', err)
     });
   }
 
   getTotal(): number {
-    return this.cartItems.reduce((total, item) => total + item.total, 0);
+    return this.dataSource.data.reduce((total, item) => total + item.total, 0);
+
   }
 
   placeOrder(): void {
-    const orderNumber = 'ORD-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-    this.dialog.open(OrderConfirmationDialogComponent, {
-      data: { orderNumber },
-      panelClass: 'custom-dialog-container'
+    const items = this.dataSource.data.map(item => ({
+      productId: item.productId,
+      quantity: item.quantity
+    }));
+
+    this.cartService.submitOrder(items).subscribe({
+      next: (orderId: number) => {
+        this.dialog.open(OrderConfirmationDialogComponent, {
+          data: {
+            orderNumber: `ORD-${orderId.toString().padStart(6, '0')}`,
+            items: this.dataSource.data,
+            total: this.getTotal()
+          },
+          panelClass: 'custom-dialog-container'
+        });
+
+        this.dataSource.data = [];
+      },
+      error: (err) => console.error('Order submission failed:', err)
     });
   }
+
+
+
 }
