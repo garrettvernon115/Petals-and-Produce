@@ -72,9 +72,22 @@ public class CartController {
         // Create or retrieve cart
         Cart cart = cartService.getOrCreateCart(currentUser, session.getId());
  
-        // Add item
-        CartItem item = new CartItem(cr.getProductId(), cr.getQuantity());
-        cart.addToCart(item);
+        // Add item (merge if exists)
+       boolean itemExists = false;
+        for (CartItem item : cart.getCartItems()) {
+            if (item.getProductId() == cr.getProductId()) {
+                item.setQuantity(item.getQuantity() + cr.getQuantity());
+                itemExists = true;
+                break;
+            }
+        }
+
+        if (!itemExists) {
+            CartItem newItem = new CartItem(cr.getProductId(), cr.getQuantity());
+            newItem.setCart(cart);
+            cart.addToCart(newItem);
+        }
+
         cartService.saveCart(cart);
  
         return ResponseEntity.ok("Item added to cart successfully.");
@@ -87,7 +100,8 @@ public class CartController {
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
             currentUser = (User) auth.getPrincipal();
         }
-        Cart cart = cartService.getCart(currentUser, session.getId());
+        Cart cart = cartService.getOrCreateCart(currentUser, session.getId());
+
 
         if (cart == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cart not found");
