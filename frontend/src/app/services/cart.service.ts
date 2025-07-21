@@ -9,7 +9,6 @@ export interface CartItem {
   quantity: number;
   total: number;
   imageUrl: string;
-  imageUrl: string;
 }
 
 @Injectable({ providedIn: 'root' })
