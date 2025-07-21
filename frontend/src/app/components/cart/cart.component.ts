@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTable } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { OrderConfirmationDialogComponent } from '../order-confirmation-dialog/order-confirmation-dialog.component'; 
+import { Router } from '@angular/router';
+import { OrderConfirmationDialogComponent } from '../order-confirmation-dialog/order-confirmation-dialog.component';
+import { CartService, CartItem } from '../../services/cart.service';
 
 @Component({
   selector: 'app-cart',
@@ -24,45 +26,60 @@ import { OrderConfirmationDialogComponent } from '../order-confirmation-dialog/o
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
-export class CartComponent {
-  constructor(private dialog: MatDialog) {}
-
+export class CartComponent implements OnInit {
   displayedColumns: string[] = ['image', 'name', 'price', 'quantity', 'subtotal', 'remove'];
+  cartItems: CartItem[] = [];
 
-  cartItems = [
-    {
-      productId: 1,
-      name: 'Tomato',
-      price: 1.5,
-      quantity: 2,
-      imageUrl: 'https://via.placeholder.com/100?text=Tomato'
-    },
-    {
-      productId: 2,
-      name: 'Carrot',
-      price: 0.99,
-      quantity: 3,
-      imageUrl: 'https://via.placeholder.com/100?text=Carrot'
-    }
-  ];
+  @ViewChild(MatTable) table!: MatTable<any>;
 
-  updateQuantity(item: any) {
-    console.log(`Updated quantity for ${item.name}: ${item.quantity}`);
-    // TODO: Integrate with backend API
+  constructor(
+    private cartService: CartService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCart();
   }
 
-  removeItem(productId: number) {
-    this.cartItems = this.cartItems.filter(item => item.productId !== productId);
-    // TODO: Integrate with backend API
+  loadCart(): void {
+    this.cartService.getCart().subscribe({
+      next: (items) => {
+        this.cartItems = items;
+        if (this.table) {
+          this.table.renderRows();
+        }
+      },
+      error: (err) => console.error('Error loading cart:', err)
+    });
+  }
+
+  updateQuantity(item: CartItem): void {
+    this.cartService.updateItem(item.productId, item.quantity).subscribe({
+      next: () => this.loadCart(),
+      error: (err) => console.error('Error updating quantity:', err)
+    });
+  }
+
+  removeItem(productId: number): void {
+    this.cartService.removeItem(productId).subscribe({
+      next: () => {
+        this.cartItems = this.cartItems.filter(item => item.productId !== productId);
+        if (this.table) {
+          this.table.renderRows(); 
+        }
+      },
+      error: (err) => console.error('Error removing item:', err)
+    });
   }
 
   getTotal(): number {
-    return this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return this.cartItems.reduce((total, item) => total + item.total, 0);
   }
 
-  placeOrder() {
+  placeOrder(): void {
     const orderNumber = 'ORD-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-    this.dialog.open(OrderConfirmationDialogComponent, { 
+    this.dialog.open(OrderConfirmationDialogComponent, {
       data: { orderNumber },
       panelClass: 'custom-dialog-container'
     });
