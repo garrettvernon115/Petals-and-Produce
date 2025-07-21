@@ -8,6 +8,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   total: number;
+  imageUrl: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -21,12 +22,13 @@ export class CartService {
   }
 
   updateItem(productId: number, newQuantity: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/cart/update`, { productId, newQuantity });
+    return this.http.post(`${this.baseUrl}/cart/update`, { productId, newQuantity }, { responseType: 'text' });
   }
 
   removeItem(productId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/cart/remove/${productId}`);
+    return this.http.delete(`/api/cart/remove/${productId}`, { responseType: 'text' });
   }
+
   addToCart(productId: number, quantity: number): Observable<string> {
     return this.http.post(`${this.baseUrl}/addToCart`, { productId, quantity }, { responseType: 'text' });
   }
