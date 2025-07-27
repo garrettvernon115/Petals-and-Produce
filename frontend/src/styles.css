@@ -21,14 +21,30 @@
   /* Borders or cards */
   --border-color: var(--butter);          /* Light border/background accent */
 }
-
-.cdk-overlay-pane.custom-dialog-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Shared dialog layout for edit-product and confirmation */
+.cdk-overlay-pane.edit-product-dialog {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding-top: 6rem !important;
+  pointer-events: auto;
+  position: fixed !important;
+  top: 0;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  max-width: 700px;
+  z-index: 2000 !important;
 }
 
-/* Style the dialog surface */
+@media (max-width: 600px) {
+  .cdk-overlay-pane.edit-product-dialog {
+    max-width: 95vw !important;
+    width: 95vw !important;
+    margin: 0 auto;
+    padding: 0 !important;
+  }
+}
 .custom-dialog-container .mat-mdc-dialog-surface {
   width: 100%;
   max-width: 400px;

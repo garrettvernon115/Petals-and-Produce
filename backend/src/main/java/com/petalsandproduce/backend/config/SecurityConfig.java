@@ -31,6 +31,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors()
+            .and()
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/register", "/api/login", "/api/auth/**").permitAll()
@@ -38,6 +40,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/orders").permitAll() 
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/orders").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
