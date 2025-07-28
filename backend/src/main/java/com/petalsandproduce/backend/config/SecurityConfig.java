@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/register", "/api/login", "/api/auth/**").permitAll()
                 .requestMatchers("/api/addToCart", "/api/cart", "/api/cart/update", "/api/cart/remove/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/orders").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/orders").authenticated()

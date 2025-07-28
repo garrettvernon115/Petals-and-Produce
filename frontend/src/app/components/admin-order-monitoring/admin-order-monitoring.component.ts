@@ -1,44 +1,47 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, AsyncPipe, DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CartService } from '../../services/cart.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-order-monitoring',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AsyncPipe, DatePipe, CurrencyPipe],
   templateUrl: './admin-order-monitoring.component.html',
   styleUrls: ['./admin-order-monitoring.component.css']
 })
 export class AdminOrderMonitoringComponent implements OnInit {
-  orders: any[] = [
-    {
-      id: 1,
-      userName: 'Test User1',
-      email: 'testuser1@example.com',
-      fulfilled: false,
-      items: [
-        { name: 'Roses', quantity: 2 },
-        { name: 'Lillies', quantity: 4 }
-      ]
-    },
-    {
-      id: 2,
-      userName: 'Test User2',
-      email: 'TU2@example.com',
-      fulfilled: true,
-      items: [
-        { name: 'Pink roses', quantity: 1 }
-      ]
-    }
+  orders: any[] = [];
+  statusOptions: string[] = [
+    'PENDING',
+    'READY_FOR_PICKUP',
+    'PICKED_UP'
   ];
 
-  constructor() {}
+  constructor(private cartSvc: CartService, private http: HttpClient) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.cartSvc.getAllOrdersForAdmin().subscribe((res) => {
+      this.orders = res;
+    });
+  }
 
-toggleFulfilled(order: any): void {
-  order.fulfilled = !order.fulfilled;
-  console.log(`Order #${order.id} now ${order.fulfilled ? 'fulfilled' : 'pending'}`);
-  // TODO: Add backend sync if needed
-}
+  updateStatus(order: any, newStatus: string): void {
+    const payload = { status: newStatus };
+
+    this.http.put(`/api/orders/${order.orderId}/status`, payload).subscribe({
+      next: () => {
+        order.status = newStatus;
+        console.log(`Order #${order.orderId} updated to ${newStatus}`);
+      },
+      error: (err) => {
+        console.error(`Failed to update order #${order.orderId}:`, err);
+      }
+    });
+  }
+
+  total(order: any): number {
+    return order.items.reduce((sum: number, item: any) => sum + item.unitPrice * item.quantity, 0);
+  }
 }

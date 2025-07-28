@@ -1,24 +1,33 @@
-<h2> Admin Order Monitoring</h2>
+<h2 class="title">Admin Order Monitoring</h2>
+
+<div *ngIf="orders.length === 0" class="empty">
+  No orders found.
+</div>
 
 <div *ngFor="let order of orders" class="order-card">
-  <p><strong>User:</strong> {{ order.userName }} ({{ order.email }})</p>
+  <header>
+    <span class="date">{{ order.orderDate | date: 'mediumDate' }}</span>
+    <span class="status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+  </header>
 
-  <p><strong>Items:</strong></p>
-  <ul>
+  <p><strong>Customer:</strong> {{ order.customerName || 'Unknown' }}</p>
+
+
+  <ul class="items">
     <li *ngFor="let item of order.items">
-      - {{ item.name }} (Qty: {{ item.quantity }})
+      <span>{{ item.quantity }} × {{ item.name }}</span>
+      <span>{{ item.unitPrice | currency }}</span>
     </li>
   </ul>
 
-  <p><strong>Status:</strong>
-    <span [style.color]="order.fulfilled ? 'green' : 'red'" style="font-weight: bold;">
-      {{ order.fulfilled ? 'Fulfilled' : 'Pending' }}
-    </span>
-  </p>
+  <footer>
+    <strong>Total:</strong>
+    <span class="total">{{ total(order) | currency }}</span>
+  </footer>
 
-  <label>
-<input
-  type="checkbox"
-  [checked]="order.fulfilled"
-  (change)="toggleFulfilled(order)" />
-    Mark as Fulfilled
+  <label for="status">Update Status:</label>
+  <select #statusSelect [value]="order.status" (change)="updateStatus(order, $any(statusSelect).value)">
+    <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+  </select>
+
+</div>
