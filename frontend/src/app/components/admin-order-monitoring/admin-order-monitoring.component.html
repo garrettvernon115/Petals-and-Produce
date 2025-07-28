@@ -1,0 +1,24 @@
+<h2> Admin Order Monitoring</h2>
+
+<div *ngFor="let order of orders" class="order-card">
+  <p><strong>User:</strong> {{ order.userName }} ({{ order.email }})</p>
+
+  <p><strong>Items:</strong></p>
+  <ul>
+    <li *ngFor="let item of order.items">
+      - {{ item.name }} (Qty: {{ item.quantity }})
+    </li>
+  </ul>
+
+  <p><strong>Status:</strong>
+    <span [style.color]="order.fulfilled ? 'green' : 'red'" style="font-weight: bold;">
+      {{ order.fulfilled ? 'Fulfilled' : 'Pending' }}
+    </span>
+  </p>
+
+  <label>
+<input
+  type="checkbox"
+  [checked]="order.fulfilled"
+  (change)="toggleFulfilled(order)" />
+    Mark as Fulfilled
