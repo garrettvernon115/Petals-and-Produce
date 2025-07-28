@@ -156,7 +156,43 @@ public class OrderService {
             throw new IllegalArgumentException("Status must be one of: placed, ready for pickup, picked up");
         }
 
+
         order.setStatus(newStatus);
         return orderRepository.save(order);
+    }
+  
+        @Transactional(readOnly = true)
+        public List<AdminOrderDTO> getAllOrdersForAdmin() {
+            List<Order> orders = orderRepository.findAllWithItemsAndCustomer();
+
+            List<AdminOrderDTO> response = new ArrayList<>();
+
+            for (Order order : orders) {
+                String customerName = order.getUser() != null
+                    ? order.getUser().getFirstName() + " " + order.getUser().getLastName()
+                    : "Guest";
+
+                List<OrderItemDTO> itemDTOs = new ArrayList<>();
+                for (OrderItem item : order.getItems()) {
+                    itemDTOs.add(new OrderItemDTO(
+                        item.getProduct().getName(),
+                        item.getPrice(),
+                        item.getQuantity()
+                    ));
+                }
+
+                AdminOrderDTO dto = new AdminOrderDTO(
+                    order.getId(),
+                    customerName,
+                    order.getOrderDate(),
+                    order.getTotalAmount(),
+                    order.getStatus().name(),
+                    itemDTOs
+                );
+
+                response.add(dto);
+            }
+
+            return response;
     }
 }
