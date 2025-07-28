@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.request.RegistrationRequest;
-import com.petalsandproduce.backend.dto.UserSummaryDTO;
+import com.petalsandproduce.backend.DTO.UserSummaryDTO;
 
 @Service
 public interface UserService {

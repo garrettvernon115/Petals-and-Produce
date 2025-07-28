@@ -1,6 +1,6 @@
 package com.petalsandproduce.backend.controller;
 
-import com.petalsandproduce.backend.dto.AdminOrderDTO;
+import com.petalsandproduce.backend.DTO.AdminOrderDTO;
 import com.petalsandproduce.backend.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

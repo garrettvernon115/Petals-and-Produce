@@ -1,4 +1,4 @@
-package com.petalsandproduce.backend.dto;
+package com.petalsandproduce.backend.DTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

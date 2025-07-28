@@ -1,6 +1,6 @@
 package com.petalsandproduce.backend.controller;
 
-import com.petalsandproduce.backend.dto.UserSummaryDTO;
+import com.petalsandproduce.backend.DTO.UserSummaryDTO;
 import com.petalsandproduce.backend.service.UserService;
 
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class AdminUserController {
 
     @GetMapping("/users")
     public ResponseEntity<List<UserSummaryDTO>> getAllUsers() {
-        List<UserSummaryDTO> users = userService.getAllUserSummaries();
+        List<UserSummaryDTO> users = userService.getALLUserSummaries();
         return ResponseEntity.ok(users);
     }
 }

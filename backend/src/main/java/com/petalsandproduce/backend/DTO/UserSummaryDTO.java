@@ -1,4 +1,4 @@
-package com.petalsandproduce.backend.dto;
+package com.petalsandproduce.backend.DTO;
 
 public class UserSummaryDTO {
     private Long id;

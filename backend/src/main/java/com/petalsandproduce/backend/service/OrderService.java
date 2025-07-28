@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.petalsandproduce.backend.DTO.AdminOrderDTO;
 import com.petalsandproduce.backend.DTO.CartItemDTO;
 import com.petalsandproduce.backend.DTO.OrderItemDTO;
 import com.petalsandproduce.backend.DTO.OrderRequestDTO;
@@ -169,7 +170,7 @@ public class OrderService {
 
             for (Order order : orders) {
                 String customerName = order.getUser() != null
-                    ? order.getUser().getFirstName() + " " + order.getUser().getLastName()
+                    ? order.getUser().getName()
                     : "Guest";
 
                 List<OrderItemDTO> itemDTOs = new ArrayList<>();

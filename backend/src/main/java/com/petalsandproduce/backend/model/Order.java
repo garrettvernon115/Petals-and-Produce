@@ -2,6 +2,7 @@ package com.petalsandproduce.backend.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,7 +38,7 @@ public class Order {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "order_date", nullable = false, updatable = false)
-    private Date orderDate;
+    private LocalDateTime orderDate;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -94,11 +95,11 @@ public class Order {
         this.pickedUp = pickedUp;
     }
 
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 
