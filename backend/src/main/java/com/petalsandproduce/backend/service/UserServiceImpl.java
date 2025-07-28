@@ -1,8 +1,12 @@
 package com.petalsandproduce.backend.service;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.petalsandproduce.backend.DTO.UserSummaryDTO;
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.repository.UserRepository;
 import com.petalsandproduce.backend.request.RegistrationRequest;
@@ -41,5 +45,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteByEmail(String email) {
         userRepository.deleteByEmail(email);
+    }
+
+    @Override
+    public List<UserSummaryDTO> getALLUserSummaries() {
+        return userRepository.findAll().stream()
+            .map(user -> new UserSummaryDTO(
+                user.getId(), 
+                user.getName(), 
+                user.getEmail(), 
+                user.getRole().name()
+            ))
+            .collect(Collectors.toList());
     }
 }

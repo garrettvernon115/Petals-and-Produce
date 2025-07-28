@@ -1,6 +1,7 @@
 package com.petalsandproduce.backend.DTO;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -9,10 +10,10 @@ public class OrderResponseDTO {
     private Long id;
     private BigDecimal totalAmount;
     private String status;
-    private Date orderDate;
+    private LocalDateTime orderDate;
     private List<OrderItemDTO> items;
 
-    public OrderResponseDTO(Long id, BigDecimal totalAmount, String status, Date orderDate, List<OrderItemDTO> items) {
+    public OrderResponseDTO(Long id, BigDecimal totalAmount, String status, LocalDateTime orderDate, List<OrderItemDTO> items) {
         this.id = id;
         this.totalAmount = totalAmount;
         this.status = status;
@@ -46,11 +47,11 @@ public class OrderResponseDTO {
         this.status = status;
     }
 
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 

@@ -32,8 +32,7 @@ import com.petalsandproduce.backend.service.ProductService;
  
 import jakarta.servlet.http.HttpSession;
  
-//@EnableJpaRepositories("com.petalsandproduce.backend.*")
- //@ComponentScan(basePackages = { "com.petalsandproduce.backend.*" })
+
  @EntityScan("com.petalsandproduce.backend.*")
  
 @RestController
@@ -51,14 +50,13 @@ public class CartController {
  
     @PostMapping("/addToCart")
     public ResponseEntity<?> addItemToCart(@RequestBody AddToCartRequest cr, HttpSession session) {
-        // Get authenticated user or null
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = null;
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
             currentUser = (User) auth.getPrincipal();
         }
  
-        // Validate product
+        
         try {
             productService.findProductById(cr.getProductId());
         } catch (ProductNotFoundException e) {
@@ -69,10 +67,10 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quantity must be positive");
         }
  
-        // Create or retrieve cart
+        
         Cart cart = cartService.getOrCreateCart(currentUser, session.getId());
  
-        // Add item (merge if exists)
+        
        boolean itemExists = false;
         for (CartItem item : cart.getCartItems()) {
             if (item.getProductId() == cr.getProductId()) {

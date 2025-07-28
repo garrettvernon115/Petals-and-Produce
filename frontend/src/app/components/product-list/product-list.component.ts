@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ProductService, ProductDTO } from '../../services/product.service';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product.models';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,8 +30,9 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
-  allProducts: ProductDTO[] = [];
-  products: ProductDTO[] = [];
+  allProducts: Product[] = [];
+  products: Product[] = [];
+
   categories: string[] = [];
 
   currentPage = 1;
@@ -73,7 +75,7 @@ export class ProductListComponent implements OnInit {
     this.updateProducts(filtered);
   }
 
-  updateProducts(filtered: ProductDTO[]) {
+  updateProducts(filtered: Product[]) {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
     this.products = filtered.slice(start, end);

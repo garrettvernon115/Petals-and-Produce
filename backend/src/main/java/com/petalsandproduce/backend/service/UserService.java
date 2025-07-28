@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.request.RegistrationRequest;
+import com.petalsandproduce.backend.DTO.UserSummaryDTO;
 
 @Service
 public interface UserService {
@@ -15,4 +16,6 @@ public interface UserService {
     List<RegistrationRequest> findAllUsers();
 
     void deleteByEmail(String email);
+
+    List<UserSummaryDTO> getALLUserSummaries();
 }

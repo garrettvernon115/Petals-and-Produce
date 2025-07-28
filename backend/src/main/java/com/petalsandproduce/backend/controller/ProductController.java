@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -51,9 +53,15 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> addProduct(@RequestBody @Valid ProductDTO productDTO) {
-        ProductDTO saved = productService.addProduct(productDTO);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        try {
+            ProductDTO saved = productService.addProduct(productDTO);
+            return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();  // Log stacktrace
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add product: " + e.getMessage());
+        }
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
