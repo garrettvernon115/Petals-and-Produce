@@ -44,6 +44,9 @@ public class ProductService {
         product.setName(dto.getName());
         product.setCategory(dto.getCategory());
         product.setPrice(dto.getPrice());
+        product.setDescription(dto.getDescription()); 
+        product.setStock(dto.getStock());             
+        product.setImageUrl(dto.getImageUrl()); 
 
         return ProductMapper.toDTO(productRepository.save(product));
     }

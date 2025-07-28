@@ -7,7 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '../services/cart.service'; // adjust path as needed
+import { CartService } from '../services/cart.service'; 
+import { Product } from '../models/product.models';
 
 @Component({
   selector: 'app-product-detail',
@@ -26,7 +27,7 @@ import { CartService } from '../services/cart.service'; // adjust path as needed
 })
 export class ProductDetailComponent implements OnInit {
   productId!: number;
-  product: any;
+  product: Product | null = null;
   error: string | null = null;
   quantity: number = 1;
 
@@ -40,7 +41,7 @@ export class ProductDetailComponent implements OnInit {
   ngOnInit(): void {
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.http.get(`/api/products/${this.productId}`).subscribe({
+    this.http.get<Product>(`/api/products/${this.productId}`).subscribe({
       next: (data) => {
         this.product = data;
         this.error = null;
@@ -52,13 +53,12 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addToCart(): void {
-    if (this.quantity <= 0 || !this.product?.id) return;
-
+  if (this.product && this.quantity > 0) {
     this.cartService.addToCart(this.product.id, this.quantity).subscribe({
       next: (response) => {
         console.log('Response:', response);
         if (typeof response === 'string' && response.includes('success')) {
-          alert(`${this.product.name} added to cart!`);
+          alert(`${this.product!.name} added to cart!`);
         } else {
           alert('Unexpected response. Please check again.');
         }
@@ -68,6 +68,7 @@ export class ProductDetailComponent implements OnInit {
         alert('Could not add item to cart.');
       }
     });
+  }
   }
 
   goBack(): void {

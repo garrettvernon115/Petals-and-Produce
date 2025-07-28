@@ -10,7 +10,7 @@
   margin: 1rem auto;
   width: 100%;
   overflow-x: auto;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 /* FILTER BOX STYLE */
@@ -79,10 +79,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 1rem;
   width: 100%;
   max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* PRODUCT CARD */

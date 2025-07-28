@@ -1,0 +1,42 @@
+<mat-card class="login-card">
+  <h2>Edit Product</h2>
+  <form #editForm="ngForm">
+    <div class="form-control">
+      <label for="name">Name:</label>
+      <input id="name" matInput [(ngModel)]="product.name" name="name" required />
+    </div>
+
+    <div class="form-control">
+      <label for="category">Category:</label>
+      <input id="category" matInput [(ngModel)]="product.category" name="category" required />
+    </div>
+
+    <div class="form-control">
+      <label for="price">Price:</label>
+      <input id="price" matInput type="number" [(ngModel)]="product.price" name="price" required />
+    </div>
+
+    <div class="form-control">
+      <label for="stock">Stock:</label>
+      <input id="stock" matInput type="number" [(ngModel)]="product.stock" name="stock" required />
+    </div>
+
+    <div class="form-control">
+      <label for="description">Description:</label>
+      <textarea id="description" matInput [(ngModel)]="product.description" name="description" required></textarea>
+    </div>
+
+    <div class="form-control">
+      <label for="imageUrl">Image URL:</label>
+      <input id="imageUrl" matInput [(ngModel)]="product.imageUrl" name="imageUrl" required/>
+      <img *ngIf="product.imageUrl" [src]="product.imageUrl" class="preview-image" alt="Preview" />
+    </div>
+
+    <button mat-raised-button class="primary full-width" type="button" (click)="save()" [disabled]="!editForm.valid">
+      Save Changes
+    </button><br>
+      <button mat-button class="primary full-width" type="button" mat-dialog-close>Cancel</button>
+  </form>
+
+
+</mat-card>

@@ -9,7 +9,14 @@
   padding: 20px 20px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
+  position: relative; 
+  z-index: 10;         
 }
+
+.menu-wrapper {
+  position: relative;
+}
+
 
 .app-title {
   font-size: 2rem;

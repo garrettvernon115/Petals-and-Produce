@@ -1,0 +1,152 @@
+.product-management-container {
+  padding: 2rem;
+}
+
+.product-table {
+  width: 100%;
+  margin-bottom: 2rem;
+  background-color: var(--butter);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Match the cart style */
+.mat-header-row,
+.mat-row {
+  display: flex;
+  align-items: center;
+}
+
+.mat-header-cell,
+.mat-cell {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+.product-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.add-button {
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
+}
+
+.add-button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.icon-button {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem;
+  transition: background-color 0.2s ease;
+  color: var(--primary-color);
+}
+
+.icon-button:hover {
+  background-color: var(--apricot);
+}
+
+
+.icon-button.delete {
+  color: darkred;
+  border-color: rgba(255, 0, 0, 0.2);
+}
+
+.icon-button.delete:hover {
+  background-color: #fbeaea;
+}
+
+.add-button {
+  background-color: var(--button-bg);
+  color: var(--button-text-color);
+  padding: 0.5rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: var(--button-hover-bg);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.add-button mat-icon {
+  font-size: 1.2rem;
+}
+
+/* Custom Pagination Controls — match product-list */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  background-color: var(--butter);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.pagination-controls select {
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+}
+
+.pagination-controls button {
+  padding: 0.5rem 1rem;
+  background-color: var(--button-bg);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-controls button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.pagination-controls span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+/* Wrap the table to enable horizontal scroll on small screens */
+.product-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Set a min-width to ensure scrollable overflow on small viewports */
+.product-table {
+  min-width: 700px; /* 👈 makes it scrollable on mobile while full-width on desktop */
+  width: 100%;
+  border-collapse: collapse;
+}

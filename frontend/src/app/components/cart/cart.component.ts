@@ -89,7 +89,7 @@ export class CartComponent implements OnInit {
             items: this.dataSource.data,
             total: this.getTotal()
           },
-          panelClass: 'custom-dialog-container'
+          panelClass: 'edit-product-dialog'
         });
 
         this.dataSource.data = [];
