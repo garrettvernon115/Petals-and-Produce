@@ -60,5 +60,15 @@ export class CartService {
   return this.http.get<any[]>(`${this.baseUrl}/orders`, { headers });
 }
 
+  getAllOrdersForAdmin(): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http.get<any[]>('/api/admin/orders', { headers });
+  }
 
 }
