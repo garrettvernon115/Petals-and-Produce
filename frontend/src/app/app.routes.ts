@@ -10,8 +10,8 @@ import { ProductDetailComponent } from './components/product-detail.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { CartComponent } from './components/cart/cart.component';
+import { AdminOrderMonitoringComponent } from './components/admin-order-monitoring/admin-order-monitoring.component';
 import { AdminProductManagementComponent } from './components/admin/admin-product-management/admin-product-management.component';
-
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -24,6 +24,8 @@ export const routes: Routes = [
   { path: 'products', component: ProductListComponent },
   { path: 'products/:id', component: ProductDetailComponent },
   { path: 'cart', component: CartComponent },
+  { path: 'admin/orders', component: AdminOrderMonitoringComponent },
   { path: 'admin/products', component: AdminProductManagementComponent, canActivate: [AdminGuard] }
+
 
 ];
