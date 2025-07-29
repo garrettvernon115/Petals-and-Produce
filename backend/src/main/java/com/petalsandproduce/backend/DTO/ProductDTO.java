@@ -26,6 +26,12 @@ public class ProductDTO {
 
     private int stock;
 
+    private boolean outOfStock;
+
+    private boolean lowStock;
+
+    private boolean criticalStock;
+
     public ProductDTO() {}
 
     public ProductDTO(Long id, String name, String category, BigDecimal price, String imageUrl, String description, int stock) {
@@ -36,6 +42,9 @@ public class ProductDTO {
         this.imageUrl = imageUrl;
         this.description = description;
         this.stock = stock;
+        this.outOfStock = stock == 0;
+        this.lowStock = stock > 0 && stock <= 10; 
+        this.criticalStock = stock > 0 && stock <= 3;
     }
 
     public Long getId() {
@@ -89,9 +98,36 @@ public class ProductDTO {
     public int getStock() {
         return stock;
     }
-
+    
     public void setStock(int stock) {
         this.stock = stock;
+        this.outOfStock = stock == 0;
+        this.lowStock = stock > 0 && stock <= 10;
+        this.criticalStock = stock > 0 && stock <= 3;
     }
+
+    public boolean isOutOfStock() {
+        return outOfStock;
     }
+
+    public void setOutOfStock(boolean outOfStock) {
+        this.outOfStock = outOfStock;
+    }
+
+    public boolean isLowStock() {
+        return lowStock;
+    }
+
+    public void setLowStock(boolean lowStock) {
+        this.lowStock = lowStock;
+    }
+
+    public boolean isCriticalStock() {
+        return criticalStock;
+    }
+
+    public void setCriticalStock(boolean criticalStock) {
+        this.criticalStock = criticalStock;
+    }
+}
 
