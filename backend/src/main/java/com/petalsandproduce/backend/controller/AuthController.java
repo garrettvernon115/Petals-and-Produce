@@ -1,13 +1,16 @@
 package com.petalsandproduce.backend.controller;
 
+import com.petalsandproduce.backend.model.Role; 
 import com.petalsandproduce.backend.model.User;
 import com.petalsandproduce.backend.repository.UserRepository;
+import com.petalsandproduce.backend.request.LoginRequest; 
 import com.petalsandproduce.backend.util.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,29 +35,44 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User loginRequest) {
+    
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
+           
+            User user = userRepository.findByUsername(loginRequest.getUsername());
+            if (user != null) {
+                
+                if (user.getRole() == Role.ADMIN && !user.getEmail().endsWith("@petalsandproduce.com")) {
+                    
+                    return ResponseEntity
+                            .status(HttpStatus.UNAUTHORIZED)
+                            .body("Invalid admin email domain");
+                }
+            }
+            
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginRequest.getUsername(), loginRequest.getPassword()
                 )
             );
 
+            
+            User authenticatedUser = userRepository.findByUsername(loginRequest.getUsername());
             String token = jwtUtil.generateToken(authentication.getName());
-            User user = userRepository.findByUsername(loginRequest.getUsername());
 
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
-            response.put("role", user.getRole());
+            response.put("role", authenticatedUser.getRole());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid credentials");
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid credentials");
         }
     }
-        @DeleteMapping("/deleteAccount")
+
+    @DeleteMapping("/deleteAccount")
     public ResponseEntity<?> deleteAccount(@RequestBody Map<String, String> payload) {
         String name = payload.get("name");
         if (name == null || name.trim().isEmpty()) {
