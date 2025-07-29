@@ -9,6 +9,7 @@ import com.petalsandproduce.backend.DTO.CartItemDTO;
 import com.petalsandproduce.backend.DTO.OrderItemDTO;
 import com.petalsandproduce.backend.DTO.OrderRequestDTO;
 import com.petalsandproduce.backend.DTO.OrderResponseDTO;
+import com.petalsandproduce.backend.exception.InsufficientStockException;
 import com.petalsandproduce.backend.model.Cart;
 import com.petalsandproduce.backend.model.Order;
 import com.petalsandproduce.backend.model.OrderItem;
@@ -45,6 +46,9 @@ public class OrderService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private StockService stockService;
+
     @Transactional
     public Long submitOrder(OrderRequestDTO orderRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -54,6 +58,18 @@ public class OrderService {
             Object principal = authentication.getPrincipal();
             if (principal instanceof User u) {
                 user = u;
+            }
+        }
+
+        for (CartItemDTO item : orderRequest.getItems()) {
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            
+            if (!stockService.isStockAvailable(product.getId(), item.getQuantity())) {
+                throw new InsufficientStockException(
+                    String.format("Insufficient stock for product '%s'. Available: %d, Requested: %d", 
+                    product.getName(), product.getStock(), item.getQuantity())
+                );
             }
         }
 
@@ -67,6 +83,8 @@ public class OrderService {
         for (CartItemDTO item : orderRequest.getItems()) {
             Product product = productRepository.findById(item.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            stockService.reserveStock(product.getId(), item.getQuantity());
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
@@ -160,6 +178,25 @@ public class OrderService {
 
         order.setStatus(newStatus);
         return orderRepository.save(order);
+    }
+
+        @Transactional
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+        
+        // Only allow cancellation if order is still pending
+        if (order.getStatus() != OrderStatus.PENDING) {
+            throw new IllegalStateException("Cannot cancel order that is not pending");
+        }
+        
+        // Restore stock for all items in the order
+        for (OrderItem item : order.getItems()) {
+            stockService.restoreStock(item.getProduct().getId(), item.getQuantity());
+        }
+        
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
     }
   
         @Transactional(readOnly = true)
