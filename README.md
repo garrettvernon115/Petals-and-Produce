@@ -3,7 +3,7 @@
 Full-stack e-commerce application for browsing, ordering, and managing plants and flowers.
  
 ## Overview
- 
+  
 Petals & Produce is a full-stack e-commerce application featuring a public storefront for browsing plants and flowers, product ordering workflows, and an administrative management portal.
  
 Originally developed from a university practicum concept, the platform was refined into a portfolio-ready full-stack application demonstrating frontend, backend, database, and API development.
