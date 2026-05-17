@@ -17,7 +17,7 @@ Originally developed from a university practicum concept, the platform was refin
 - Angular frontend application
 - Relational database integration with MySQL
 - Cloud-hosted deployment
-## Demo
+## Demo 
  
 Live Demo: [Petals & Produce Live Demo](https://practicum-project-1-q1w6.vercel.app/home)
  
